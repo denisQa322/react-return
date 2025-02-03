@@ -1,0 +1,23 @@
+@use "sass:math";
+@function toVw($target) {
+  $vw-context: (1920 * 0.01) * 1px;
+  @return math.div($target, $vw-context) * 1vw;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: sans-serif;
+  color: #0067a4;
+}
+.container {
+  width: toVw(1600px);
+  margin: auto;
+}
+a {
+  text-decoration: none;
+}
+ul {
+  list-style-type: none;
+}
