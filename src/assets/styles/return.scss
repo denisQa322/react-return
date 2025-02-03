@@ -1,0 +1,26 @@
+@use "sass:math";
+@function toVw($target) {
+  $vw-context: (1920 * 0.01) * 1px;
+  @return math.div($target, $vw-context) * 1vw;
+}
+main {
+  .create {
+    .return-create {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: toVw(70px);
+      align-items: center;
+      padding-bottom: toVw(25px);
+      &-inputs {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: toVw(70px);
+      }
+      &-selects {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: toVw(70px);
+      }
+    }
+  }
+}

@@ -1,25 +1,26 @@
 import React, { useState } from "react";
 import Button from "../components/ButtonComponent";
 import Input from "../components/InputComponent";
+import "../assets/styles/return.scss";
+import { format } from "date-fns";
+import { ru } from "date-fns/locale";
+import Select from "../components/SelectComponent";
 
 const Return = () => {
-  const [value, setValue] = useState<string>("");
-  const [error, setError] = useState<string>("");
+  const [reference, setReference] = useState<string>("");
+  const [quantity, setQuantity] = useState<string>("");
+  const [price, setPrice] = useState<string>("");
+  const date = format(new Date(), "dd MMMM yyyy", { locale: ru });
+  const handleReferenceChange = (newReference: string) => {
+    setReference(newReference);
+  };
 
-  const handleChange = (newValue: string) => {
-    const numValue = Number(newValue);
+  const handleQuantityChange = (newQuantity: string) => {
+    setQuantity(newQuantity);
+  };
 
-    if (newValue === "") {
-      setError("");
-    } else if (isNaN(numValue)) {
-      setError("Введите число");
-    } else if (numValue < 0) {
-      setError("Число не может быть отрицательным");
-    } else {
-      setError("");
-    }
-
-    setValue(newValue);
+  const handlePriceChange = (newPrice: string) => {
+    setPrice(newPrice);
   };
 
   return (
@@ -29,14 +30,38 @@ const Return = () => {
           <div className="return-create-inputs">
             <Input
               label="Референс"
-              type="number"
-              value={value}
-              error={error}
-              onChange={handleChange}
+              type="string"
+              value={reference}
+              onChange={handleReferenceChange}
+            />
+            <Input
+              label="Количество"
+              type="string"
+              value={quantity}
+              onChange={handleQuantityChange}
+            />
+            <Input
+              label="Стоимость"
+              type="string"
+              value={price}
+              onChange={handlePriceChange}
+            />
+            <Input label="Дата" type="text" disabled={true} value={date} />
+          </div>
+          <div className="return-create-selects">
+            <Select
+              label=""
+              placeholder=""
+              currentValue={}
+              onChange={}
+              options={}
             />
           </div>
-          <div className="return-create-selects"></div>
-          <Button />
+          <Button
+            onClick={() => console.log({ reference, quantity, price, date })}
+          >
+            Добавить
+          </Button>
         </div>
       </section>
       <section className="filters"></section>

@@ -1,30 +1,34 @@
 import { ChangeEvent, FC } from "react";
 import Error from "./ErrorComponent";
+import "../assets/styles/input.scss";
 
 interface InputProps {
-  label: string;
-  type: "number";
-  value: string;
+  disabled?: boolean;
   error?: string;
-  onChange: (value: string) => void;
+  label: string;
+  onChange?: (value: string) => void;
+  type: string;
+  value: string;
 }
 
 const Input: FC<InputProps> = ({
+  error,
   label,
+  onChange,
   type,
   value,
-  error,
-  onChange,
   ...props
 }) => {
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    onChange(e.target.value);
+  const inputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (onChange) {
+      onChange(e.target.value);
+    }
   };
 
   return (
     <div className="input-wrapper">
       <label>{label}</label>
-      <input {...props} type={type} value={value} onChange={handleChange} />
+      <input {...props} type={type} value={value} onChange={inputChange} />
       <div className="error-container">
         {error && <Error message={error} />}
       </div>
