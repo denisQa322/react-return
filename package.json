@@ -11,12 +11,13 @@
   },
   "dependencies": {
     "@date-io/date-fns": "^3.2.0",
-    "date-fns": "^4.1.0",
+    "date-fns": "^3.6.0",
     "date-fns-jalali": "^4.1.0-0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^7.1.5",
     "react-transition-group": "^4.4.5",
+    "uuid": "^11.0.5",
     "zod": "^3.24.1"
   },
   "devDependencies": {

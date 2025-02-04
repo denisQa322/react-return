@@ -1,5 +1,6 @@
 import React, { ChangeEvent, FC } from "react";
 import Error from "./ErrorComponent";
+import "../assets/styles/select.scss";
 
 interface Option {
   id: string | number;
@@ -13,8 +14,8 @@ interface SelectProps {
   placeholder: string;
   returnSelect?: string;
   options: Option[];
-  currentValue: string | number;
-  onChange: (value: string | number) => void;
+  currentValue: string;
+  onChange: (value: string) => void;
 }
 
 const Select: FC<SelectProps> = ({

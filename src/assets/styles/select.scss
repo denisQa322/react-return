@@ -1,0 +1,26 @@
+@use "sass:math";
+@function toVw($target) {
+  $vw-context: (1920 * 0.01) * 1px;
+  @return math.div($target, $vw-context) * 1vw;
+}
+.select {
+  display: grid;
+  justify-items: center;
+  label {
+    font-size: toVw(20px);
+    margin-bottom: toVw(5px);
+  }
+  select {
+    border: toVw(1px) solid #0067a4;
+    border-radius: toVw(7px);
+    padding: toVw(10px) toVw(5px);
+    font-size: toVw(15px);
+    option {
+      padding: toVw(10px) toVw(5px);
+      font-size: toVw(15px);
+    }
+  }
+  .error-container {
+    height: toVw(25px);
+  }
+}
