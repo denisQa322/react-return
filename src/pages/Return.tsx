@@ -49,9 +49,6 @@ const Return: React.FC = () => {
   const date = format(new Date(), "dd MMMM yyyy", { locale: ru });
   const [selectedReason, setSelectedReason] = useState<string>("");
   const [selectedSeller, setSelectedSeller] = useState<string>("");
-  const [selectedStatus, setSelectedStatus] = useState<string>("Новый возврат");
-  const [isEditingStatus, setIsEditingStatus] = useState<boolean>(false);
-  const [tempStatus, setTempStatus] = useState<string>(selectedStatus); // Временный статус
   const [errors, setErrors] = useState<Record<string, string[]>>({});
   const { state: returns, update: setReturns } = useLocalStorage<ReturnItem[]>(
     "returns",
@@ -60,41 +57,61 @@ const Return: React.FC = () => {
 
   const emptyData = useMemo(() => {
     return (
-      reference.trim() === "" ||
-      quantity.trim() === "" ||
-      price.trim() === "" ||
+      reference.length < 7 ||
+      !quantity ||
+      !price ||
       !selectedReason ||
       !selectedSeller ||
-      Object.values(errors).some((errArray) => errArray.length > 0)
+      Object.values(errors).some((e) => e.length > 0)
     );
   }, [reference, quantity, price, selectedReason, selectedSeller, errors]);
 
+  const validateField = (
+    field: keyof typeof ReturnSchema.shape,
+    value: any
+  ) => {
+    const schema = ReturnSchema.shape[field]; // Получаем конкретную валидацию поля
+
+    const result = schema.safeParse(value); // Проверяем значение
+
+    setErrors((prev) => ({
+      ...prev,
+      [field]: result.success
+        ? []
+        : result.error?.errors.map((e) => e.message) || [],
+    }));
+  };
+
   const handleSellerChange = (newSeller: string) => {
     setSelectedSeller(newSeller);
+    validateField("seller", newSeller || undefined); // Отправляем undefined если пусто
   };
   const handleReasonChange = (newReason: string) => {
     setSelectedReason(newReason);
+    validateField("reason", newReason || undefined);
   };
 
+  // Пример для reference
   const handleReferenceChange = (newReference: string) => {
     setReference(newReference);
-
-    // Если ошибка была связана с длиной reference, очищаем её
-    if (newReference.length >= 7 && errors.reference) {
-      setErrors((prevErrors) => {
-        const updatedErrors = { ...prevErrors };
-        delete updatedErrors.reference;
-        return updatedErrors;
-      });
+    if (newReference.length > 0) {
+      validateField("reference", newReference);
+    } else {
+      setErrors((prev) => ({ ...prev, reference: [] }));
     }
   };
 
+  // Для числовых полей
   const handleQuantityChange = (newQuantity: string) => {
+    const numValue = newQuantity === "" ? 0 : Number(newQuantity);
     setQuantity(newQuantity);
+    validateField("quantity", isNaN(numValue) ? undefined : numValue);
   };
 
   const handlePriceChange = (newPrice: string) => {
+    const numValue = newPrice === "" ? 0 : Number(newPrice);
     setPrice(newPrice);
+    validateField("price", isNaN(numValue) ? undefined : numValue);
   };
 
   const resetForm = () => {
@@ -135,15 +152,13 @@ const Return: React.FC = () => {
   };
 
   const handleEditStatus = (id: string) => {
-    if (isEditingStatus) {
-      setSelectedStatus(tempStatus);
-
-      const updatedReturns = returns.map((r) =>
-        r.id === id ? { ...r, status: tempStatus } : r
-      );
-      setReturns(updatedReturns);
-    }
-    setIsEditingStatus(!isEditingStatus);
+    setReturns((prevReturns) =>
+      prevReturns.map((r) =>
+        r.id === id && r.active !== "finished"
+          ? { ...r, isEditing: !r.isEditing }
+          : r
+      )
+    );
   };
 
   const getReturnStatusClass = (status: string) => {
@@ -183,6 +198,14 @@ const Return: React.FC = () => {
 
   return (
     <main className="container">
+      <button
+        onClick={() => {
+          localStorage.clear();
+          location.reload();
+        }}
+      >
+        Очистить Local Storage
+      </button>
       <section className="create">
         <div className="return-create">
           <div className="return-create-inputs">
@@ -195,14 +218,14 @@ const Return: React.FC = () => {
             />
             <Input
               label="Количество"
-              type="string"
+              type="number"
               value={quantity}
               onChange={handleQuantityChange}
               error={errors.quantity?.[0]}
             />
             <Input
               label="Стоимость"
-              type="string"
+              type="number"
               value={price}
               onChange={handlePriceChange}
               error={errors.price?.[0]}
@@ -277,18 +300,24 @@ const Return: React.FC = () => {
                 </div>
                 <div className="return-status">
                   <label>Статус возврата</label>
-                  {isEditingStatus ? (
+                  {r.isEditing ? (
                     <Select
                       placeholder="Выбери статус"
                       returnSelect="return-status select"
-                      currentValue={tempStatus}
-                      onChange={(newStatus) => {
-                        setTempStatus(newStatus);
-                      }}
+                      currentValue={r.status}
                       options={returnStatusList}
+                      onChange={(newStatus) => {
+                        setReturns((prevReturns) =>
+                          prevReturns.map((item) =>
+                            item.id === r.id
+                              ? { ...item, status: newStatus }
+                              : item
+                          )
+                        );
+                      }}
                     />
                   ) : (
-                    <p>{selectedStatus}</p>
+                    <p>{r.status}</p>
                   )}
                 </div>
                 <div className="return-info-buttons">

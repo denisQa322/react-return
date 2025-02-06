@@ -13,5 +13,6 @@ export interface ReturnItem {
   reason: string;
   seller: string;
   status: string;
+  isEditing?: boolean;
   active: "active" | "finished";
 }

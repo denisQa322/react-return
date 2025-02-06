@@ -72,23 +72,23 @@ main {
       opacity: 0.5;
     }
     .status-sent {
-      border-left: 10px solid #1e90ff;
+      border-left: toVw(10px) solid #1e90ff;
     }
 
     .status-return-requested {
-      border-left: 10px solid #ff8c00;
+      border-left: toVw(10px) solid #ff8c00;
     }
 
     .status-to-dispose {
-      border-left: 10px solid #ff6347;
+      border-left: toVw(10px) solid #ff6347;
     }
 
     .status-return-received {
-      border-left: 10px solid #32cd32;
+      border-left: toVw(10px) solid #32cd32;
     }
 
     .status-return-processed {
-      border-left: 10px solid #00bcd4;
+      border-left: toVw(10px) solid #00bcd4;
     }
   }
 }
