@@ -10,7 +10,7 @@ interface Option {
 
 interface SelectProps {
   error?: string;
-  label: string;
+  label?: string;
   placeholder: string;
   returnSelect?: string;
   options: Option[];

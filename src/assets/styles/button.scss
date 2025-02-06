@@ -1,0 +1,37 @@
+@use "sass:math";
+@function toVw($target) {
+  $vw-context: (1920 * 0.01) * 1px;
+  @return math.div($target, $vw-context) * 1vw;
+}
+.button-wrapper {
+  button.return-create-icon {
+    margin-left: auto;
+    background: none;
+    border: none;
+    cursor: pointer;
+    img {
+      width: toVw(40px);
+    }
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      img {
+        filter: grayscale(100%);
+      }
+    }
+  }
+  .return-done-icon,
+  .return-edit-icon,
+  .return-delete-icon {
+    margin-left: auto;
+    background: none;
+    border: none;
+    cursor: pointer;
+    img {
+      width: toVw(25px);
+    }
+    &:disabled {
+      cursor: not-allowed;
+    }
+  }
+}

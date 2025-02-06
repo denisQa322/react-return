@@ -21,7 +21,13 @@ const Input: FC<InputProps> = ({
 }) => {
   const inputChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (onChange) {
-      onChange(e.target.value);
+      let value = e.target.value;
+
+      if (type === "number") {
+        value = value.replace(/\D/g, "");
+      }
+
+      onChange(value);
     }
   };
 
