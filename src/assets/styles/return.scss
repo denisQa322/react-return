@@ -4,6 +4,9 @@
   @return math.div($target, $vw-context) * 1vw;
 }
 main {
+  .loading-indicator {
+    font-size: toVw(20px);
+  }
   .create {
     .return-create {
       display: grid;

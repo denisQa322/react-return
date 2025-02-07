@@ -1,10 +1,12 @@
-import React, { useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import "../assets/styles/return.scss";
 
 import Button from "../components/ButtonComponent";
 import Input from "../components/InputComponent";
 import Select from "../components/SelectComponent";
 import useLocalStorage from "../hooks/useLocalStorage";
+import useReturnFilters from "../hooks/useReturnFilters ";
+import useReturnsCounts from "../hooks/useReturnsCounts";
 
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
@@ -16,7 +18,13 @@ import DeleteButton from "../assets/icons/delete-button.svg";
 import AddButton from "../assets/icons/add-button.svg";
 
 import { ReturnSchema } from "../schemas/ReturnSchema";
-import { ReturnItem, returnListOption } from "../types/returns";
+import { ReturnItemProps, returnListOption } from "../types/returns";
+import LoadingComponent from "../components/LoadingComponent";
+
+const returnActiveStatusList = [
+  { id: 1, value: "active", label: "Активный" },
+  { id: 2, value: "finished", label: "Завершенный" },
+];
 
 const returnSellersList: returnListOption[] = [
   { id: "АП", value: "АП", label: "АП" },
@@ -50,10 +58,33 @@ const Return: React.FC = () => {
   const [selectedReason, setSelectedReason] = useState<string>("");
   const [selectedSeller, setSelectedSeller] = useState<string>("");
   const [errors, setErrors] = useState<Record<string, string[]>>({});
-  const { state: returns, update: setReturns } = useLocalStorage<ReturnItem[]>(
-    "returns",
-    []
-  );
+  const { state: returns, update: setReturns } = useLocalStorage<
+    ReturnItemProps[]
+  >("returns", []);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  const {
+    selectedStatusFilter,
+    setSelectedStatusFilter,
+    selectedReasonFilter,
+    setSelectedReasonFilter,
+    selectedSellerFilter,
+    setSelectedSellerFilter,
+    selectedActiveFilter,
+    setSelectedActiveFilter,
+    filteredReturns,
+  } = useReturnFilters(returns);
+
+  console.log(selectedActiveFilter);
+
+  const { StatusCounts, ReasonCounts, SellerCounts, ActiveCounts } =
+    useReturnsCounts(
+      returns,
+      returnStatusList,
+      returnReasonsList,
+      returnSellersList,
+      returnActiveStatusList
+    );
 
   const emptyData = useMemo(() => {
     return (
@@ -68,11 +99,11 @@ const Return: React.FC = () => {
 
   const validateField = (
     field: keyof typeof ReturnSchema.shape,
-    value: any
+    value: unknown
   ) => {
-    const schema = ReturnSchema.shape[field]; // Получаем конкретную валидацию поля
+    const schema = ReturnSchema.shape[field];
 
-    const result = schema.safeParse(value); // Проверяем значение
+    const result = schema.safeParse(value);
 
     setErrors((prev) => ({
       ...prev,
@@ -82,37 +113,50 @@ const Return: React.FC = () => {
     }));
   };
 
-  const handleSellerChange = (newSeller: string) => {
-    setSelectedSeller(newSeller);
-    validateField("seller", newSeller || undefined); // Отправляем undefined если пусто
-  };
-  const handleReasonChange = (newReason: string) => {
-    setSelectedReason(newReason);
-    validateField("reason", newReason || undefined);
-  };
+  const handleSellerChange = useCallback(
+    (newSeller: string) => {
+      setSelectedSeller(newSeller);
+      validateField("seller", newSeller);
+    },
+    [setSelectedSeller]
+  );
+  const handleReasonChange = useCallback(
+    (newReason: string) => {
+      setSelectedReason(newReason);
+      validateField("reason", newReason);
+    },
+    [setSelectedReason]
+  );
 
-  // Пример для reference
-  const handleReferenceChange = (newReference: string) => {
-    setReference(newReference);
-    if (newReference.length > 0) {
-      validateField("reference", newReference);
-    } else {
-      setErrors((prev) => ({ ...prev, reference: [] }));
-    }
-  };
+  const handleReferenceChange = useCallback(
+    (newReference: string) => {
+      setReference(newReference);
+      if (newReference.length > 0) {
+        validateField("reference", newReference);
+      } else {
+        setErrors((prev) => ({ ...prev, reference: [] }));
+      }
+    },
+    [setReference]
+  );
 
-  // Для числовых полей
-  const handleQuantityChange = (newQuantity: string) => {
-    const numValue = newQuantity === "" ? 0 : Number(newQuantity);
-    setQuantity(newQuantity);
-    validateField("quantity", isNaN(numValue) ? undefined : numValue);
-  };
+  const handleQuantityChange = useCallback(
+    (newQuantity: string) => {
+      const numValue = newQuantity === "" ? 0 : Number(newQuantity);
+      setQuantity(newQuantity);
+      validateField("quantity", isNaN(numValue) ? undefined : numValue);
+    },
+    [setQuantity]
+  );
 
-  const handlePriceChange = (newPrice: string) => {
-    const numValue = newPrice === "" ? 0 : Number(newPrice);
-    setPrice(newPrice);
-    validateField("price", isNaN(numValue) ? undefined : numValue);
-  };
+  const handlePriceChange = useCallback(
+    (newPrice: string) => {
+      const numValue = newPrice === "" ? 0 : Number(newPrice);
+      setPrice(newPrice);
+      validateField("price", isNaN(numValue) ? undefined : numValue);
+    },
+    [setPrice]
+  );
 
   const resetForm = () => {
     setReference("");
@@ -123,43 +167,62 @@ const Return: React.FC = () => {
     setErrors({});
   };
 
-  const handleAddReturn = () => {
-    const newReturn: ReturnItem = {
-      id: uuidv4(),
+  const handleAddReturn = useCallback(
+    () => {
+      const newReturn: ReturnItemProps = {
+        id: uuidv4(),
+        reference,
+        quantity: Number(quantity),
+        price: Number(price),
+        date,
+        reason: selectedReason,
+        seller: selectedSeller,
+        status: "Новый возврат",
+        active: "active",
+      };
+      const validationResult = ReturnSchema.safeParse(newReturn);
+
+      if (!validationResult.success) {
+        const { fieldErrors } = validationResult.error.flatten();
+        setErrors(fieldErrors);
+        return;
+      }
+      setReturns([...returns, newReturn]);
+      resetForm();
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [
       reference,
-      quantity: Number(quantity),
-      price: Number(price),
+      quantity,
+      price,
       date,
-      reason: selectedReason,
-      seller: selectedSeller,
-      status: "Новый возврат",
-      active: "active",
-    };
-    const validationResult = ReturnSchema.safeParse(newReturn);
+      selectedReason,
+      selectedSeller,
+      setReturns,
+    ]
+  );
 
-    if (!validationResult.success) {
-      const { fieldErrors } = validationResult.error.flatten();
-      setErrors(fieldErrors);
-      return;
-    }
-    setReturns([...returns, newReturn]);
-    resetForm();
-  };
+  const handleDeleteReturn = useCallback(
+    (id: string) => {
+      const updatedReturns = returns.filter((ret) => ret.id !== id);
+      setReturns(updatedReturns);
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [setReturns]
+  );
 
-  const handleDeleteReturn = (id: string) => {
-    const updatedReturns = returns.filter((ret) => ret.id !== id);
-    setReturns(updatedReturns);
-  };
-
-  const handleEditStatus = (id: string) => {
-    setReturns((prevReturns) =>
-      prevReturns.map((r) =>
-        r.id === id && r.active !== "finished"
-          ? { ...r, isEditing: !r.isEditing }
-          : r
-      )
-    );
-  };
+  const handleEditStatus = useCallback(
+    (id: string) => {
+      setReturns((prevReturns) =>
+        prevReturns.map((r) =>
+          r.id === id && r.active !== "finished"
+            ? { ...r, isEditing: !r.isEditing }
+            : r
+        )
+      );
+    },
+    [setReturns]
+  );
 
   const getReturnStatusClass = (status: string) => {
     switch (status) {
@@ -182,172 +245,256 @@ const Return: React.FC = () => {
     }
   };
 
-  const completeReturn = (id: string) => {
-    setReturns((prevReturns) =>
-      prevReturns.map((r) =>
-        r.id === id
-          ? {
-              ...r,
-              active: r.active === "active" ? "finished" : "active",
-              status: "finished",
-            }
-          : r
-      )
-    );
-  };
+  const completeReturn = useCallback(
+    (id: string) => {
+      setReturns((prevReturns) =>
+        prevReturns.map((r) =>
+          r.id === id
+            ? {
+                ...r,
+                active: r.active === "active" ? "finished" : "active",
+                status: "Завершенный",
+              }
+            : r
+        )
+      );
+    },
+    [setReturns]
+  );
+
+  useEffect(() => {
+    setLoading(true); // Показываем индикатор загрузки
+
+    setTimeout(() => {
+      const savedReturns = JSON.parse(localStorage.getItem("returns") || "[]"); // Имитация загрузки с "сервера"
+      setReturns(savedReturns);
+      setLoading(false); // Скрываем индикатор после загрузки
+    }, 2000); // 2 секунды задержки, можно менять
+  }, []);
 
   return (
     <main className="container">
-      <button
-        onClick={() => {
-          localStorage.clear();
-          location.reload();
-        }}
-      >
-        Очистить Local Storage
-      </button>
-      <section className="create">
-        <div className="return-create">
-          <div className="return-create-inputs">
-            <Input
-              label="Референс"
-              type="text"
-              value={reference}
-              onChange={handleReferenceChange}
-              error={errors.reference?.[0]}
-            />
-            <Input
-              label="Количество"
-              type="number"
-              value={quantity}
-              onChange={handleQuantityChange}
-              error={errors.quantity?.[0]}
-            />
-            <Input
-              label="Стоимость"
-              type="number"
-              value={price}
-              onChange={handlePriceChange}
-              error={errors.price?.[0]}
-            />
-            <Input label="Дата" type="text" disabled={true} value={date} />
-          </div>
-          <div className="return-create-selects">
-            <Select
-              label="Причина возврата"
-              placeholder="Выбери причину"
-              returnSelect="return-create-reason select"
-              currentValue={selectedReason}
-              onChange={handleReasonChange}
-              options={returnReasonsList}
-              error={errors.reason?.[0]}
-            />
-            <Select
-              label="Поставщик"
-              placeholder="Выбери поставщика"
-              returnSelect="return-create-seller select"
-              currentValue={selectedSeller}
-              onChange={handleSellerChange}
-              options={returnSellersList}
-              error={errors.seller?.[0]}
-            />
-          </div>
-          <Button
-            btnClass="return-create-icon"
-            btnImgSrc={AddButton}
-            buttonAlt="Добавить возврат"
-            disabled={emptyData}
-            onClick={handleAddReturn}
-          />
-        </div>
-      </section>
-      <section className="filters"></section>
-      <section className="info">
-        {returns.length === 0 ? (
-          <p className="info-empty">Нет возвратов</p>
-        ) : (
-          returns.map((r) => (
-            <div
-              key={r.id}
-              className={`return-info ${getReturnStatusClass(r.status)} ${
-                r.active
-              }`}
-            >
-              <div className="return-info-content">
-                <div className="return-reference">
-                  <label>Референс</label>
-                  <p>{r.reference}</p>
-                </div>
-                <div className="return-quantity">
-                  <label>Количество</label>
-                  <p>{r.quantity}</p>
-                </div>
-                <div className="return-price">
-                  <label>Стоимость</label>
-                  <p>{r.price}₸</p>
-                </div>
-                <div className="return-date">
-                  <label>Дата</label>
-                  <p>{r.date}</p>
-                </div>
-                <div className="return-seller">
-                  <label>Поставщик</label>
-                  <p>{r.seller}</p>
-                </div>
-                <div className="return-reason">
-                  <label>Причина возврата</label>
-                  <p>{r.reason}</p>
-                </div>
-                <div className="return-status">
-                  <label>Статус возврата</label>
-                  {r.isEditing ? (
-                    <Select
-                      placeholder="Выбери статус"
-                      returnSelect="return-status select"
-                      currentValue={r.status}
-                      options={returnStatusList}
-                      onChange={(newStatus) => {
-                        setReturns((prevReturns) =>
-                          prevReturns.map((item) =>
-                            item.id === r.id
-                              ? { ...item, status: newStatus }
-                              : item
-                          )
-                        );
-                      }}
-                    />
-                  ) : (
-                    <p>{r.status}</p>
-                  )}
-                </div>
-                <div className="return-info-buttons">
-                  <Button
-                    btnClass="return-done-icon"
-                    btnImgSrc={DoneButton}
-                    buttonAlt="Завершить возврат"
-                    onClick={() => completeReturn(r.id)}
-                    disabled={r.active === "finished"}
-                  />
-                  <Button
-                    btnClass="return-edit-icon"
-                    btnImgSrc={EditButton}
-                    buttonAlt="Изменить возврат"
-                    onClick={() => handleEditStatus(r.id)}
-                    disabled={r.active === "finished"}
-                  />
-                  <Button
-                    btnClass="return-delete-icon"
-                    btnImgSrc={DeleteButton}
-                    buttonAlt="Удалить возврат"
-                    onClick={() => handleDeleteReturn(r.id)}
-                    disabled={r.active === "finished"}
-                  />
-                </div>
+      {loading ? (
+        <LoadingComponent />
+      ) : (
+        <>
+          <button
+            onClick={() => {
+              localStorage.clear();
+              location.reload();
+            }}
+          >
+            Очистить Local Storage
+          </button>
+          <section className="create">
+            <div className="return-create">
+              <div className="return-create-inputs">
+                <Input
+                  label="Референс"
+                  type="text"
+                  value={reference}
+                  onChange={handleReferenceChange}
+                  error={errors.reference?.[0]}
+                />
+                <Input
+                  label="Количество"
+                  type="number"
+                  value={quantity}
+                  onChange={handleQuantityChange}
+                  error={errors.quantity?.[0]}
+                />
+                <Input
+                  label="Стоимость"
+                  type="number"
+                  value={price}
+                  onChange={handlePriceChange}
+                  error={errors.price?.[0]}
+                />
+                <Input label="Дата" type="text" disabled={true} value={date} />
               </div>
+              <div className="return-create-selects">
+                <Select
+                  label="Причина возврата"
+                  placeholder="Выбери причину"
+                  returnSelect="return-create-reason select"
+                  currentValue={selectedReason}
+                  onChange={handleReasonChange}
+                  options={returnReasonsList}
+                  error={errors.reason?.[0]}
+                />
+                <Select
+                  label="Поставщик"
+                  placeholder="Выбери поставщика"
+                  returnSelect="return-create-seller select"
+                  currentValue={selectedSeller}
+                  onChange={handleSellerChange}
+                  options={returnSellersList}
+                  error={errors.seller?.[0]}
+                />
+              </div>
+              <Button
+                btnClass="return-create-icon"
+                btnImgSrc={AddButton}
+                buttonAlt="Добавить возврат"
+                disabled={emptyData}
+                onClick={handleAddReturn}
+              />
             </div>
-          ))
-        )}
-      </section>
+          </section>
+          <section className="filters">
+            <Select
+              returnSelect="status-filter select"
+              label="Фильтр по статусу"
+              placeholder="Выбери статус"
+              currentValue={selectedStatusFilter}
+              onChange={setSelectedStatusFilter}
+              options={[
+                { id: -1, value: "", label: `Все статусы (${returns.length})` },
+                ...returnStatusList.map((status) => ({
+                  ...status,
+                  label: `${status.label} (${StatusCounts[status.value] ?? 0})`,
+                })),
+              ]}
+            />
+            <Select
+              returnSelect="reason-filter select"
+              label="Фильтр по причине"
+              placeholder="Выбери причину"
+              currentValue={selectedReasonFilter}
+              onChange={setSelectedReasonFilter}
+              options={[
+                { id: -2, value: "", label: `Все причины (${returns.length})` },
+                ...returnReasonsList.map((reason) => ({
+                  ...reason,
+                  label: `${reason.label} (${ReasonCounts[reason.value] ?? 0})`,
+                })),
+              ]}
+            />
+            <Select
+              returnSelect="seller-filter select"
+              label="Фильтр по поставщику"
+              placeholder="Выбери поставщика"
+              currentValue={selectedSellerFilter}
+              onChange={setSelectedSellerFilter}
+              options={[
+                {
+                  id: -3,
+                  value: "",
+                  label: `Все поставщики(${returns.length})`,
+                },
+                ...returnSellersList.map((seller) => ({
+                  ...seller,
+                  label: `${seller.label} (${SellerCounts[seller.value] ?? 0})`,
+                })),
+              ]}
+            />
+            <Select
+              returnSelect="active-filter select"
+              label="Фильтр по активности"
+              placeholder="Выбери активность"
+              currentValue={selectedActiveFilter}
+              onChange={setSelectedActiveFilter}
+              options={[
+                {
+                  id: -4,
+                  value: "",
+                  label: `Все заказы (${returns.length})`,
+                },
+                ...returnActiveStatusList.map((active) => ({
+                  ...active,
+                  label: `${active.label} (${ActiveCounts[active.value] ?? 0})`,
+                })),
+              ]}
+            />
+          </section>
+          <section className="info">
+            {filteredReturns.length === 0 ? (
+              <p className="info-empty">Нет возвратов</p>
+            ) : (
+              filteredReturns.map((r) => (
+                <div
+                  key={r.id}
+                  className={`return-info ${getReturnStatusClass(r.status)} ${
+                    r.active
+                  }`}
+                >
+                  <div className="return-info-content">
+                    <div className="return-reference">
+                      <label>Референс</label>
+                      <p>{r.reference}</p>
+                    </div>
+                    <div className="return-quantity">
+                      <label>Количество</label>
+                      <p>{r.quantity}</p>
+                    </div>
+                    <div className="return-price">
+                      <label>Стоимость</label>
+                      <p>{r.price}₸</p>
+                    </div>
+                    <div className="return-date">
+                      <label>Дата</label>
+                      <p>{r.date}</p>
+                    </div>
+                    <div className="return-seller">
+                      <label>Поставщик</label>
+                      <p>{r.seller}</p>
+                    </div>
+                    <div className="return-reason">
+                      <label>Причина возврата</label>
+                      <p>{r.reason}</p>
+                    </div>
+                    <div className="return-status">
+                      <label>Статус возврата</label>
+                      {r.isEditing ? (
+                        <Select
+                          placeholder="Выбери статус"
+                          returnSelect="return-status select"
+                          currentValue={r.status}
+                          options={returnStatusList}
+                          onChange={(newStatus) => {
+                            setReturns((prevReturns) =>
+                              prevReturns.map((item) =>
+                                item.id === r.id
+                                  ? { ...item, status: newStatus }
+                                  : item
+                              )
+                            );
+                          }}
+                        />
+                      ) : (
+                        <p>{r.status}</p>
+                      )}
+                    </div>
+                    <div className="return-info-buttons">
+                      <Button
+                        btnClass="return-done-icon"
+                        btnImgSrc={DoneButton}
+                        buttonAlt="Завершить возврат"
+                        onClick={() => completeReturn(r.id)}
+                        disabled={r.active === "finished"}
+                      />
+                      <Button
+                        btnClass="return-edit-icon"
+                        btnImgSrc={EditButton}
+                        buttonAlt="Изменить возврат"
+                        onClick={() => handleEditStatus(r.id)}
+                        disabled={r.active === "finished"}
+                      />
+                      <Button
+                        btnClass="return-delete-icon"
+                        btnImgSrc={DeleteButton}
+                        buttonAlt="Удалить возврат"
+                        onClick={() => handleDeleteReturn(r.id)}
+                        disabled={r.active === "finished"}
+                      />
+                    </div>
+                  </div>
+                </div>
+              ))
+            )}
+          </section>
+        </>
+      )}
     </main>
   );
 };
