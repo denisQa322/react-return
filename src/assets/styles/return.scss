@@ -1,9 +1,15 @@
-@use "sass:math";
-@function toVw($target) {
-  $vw-context: (1920 * 0.01) * 1px;
-  @return math.div($target, $vw-context) * 1vw;
-}
+@use "./toVw.scss" as *;
+
 main {
+  .clean-storage {
+    background: none;
+    border: toVw(1px) solid #0067a4;
+    padding: toVw(15px);
+    border-radius: toVw(5px);
+    cursor: pointer;
+    margin-left: 45%;
+    font-size: toVw(15px);
+  }
   .create {
     .return-create {
       display: grid;

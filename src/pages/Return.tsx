@@ -253,8 +253,6 @@ const Return: React.FC = () => {
     }, 2000);
   }, []);
 
-  const filterProps = useReturnFilters(returns);
-
   return (
     <main className="container">
       {loading ? (
@@ -262,6 +260,7 @@ const Return: React.FC = () => {
       ) : (
         <>
           <button
+            className="clean-storage"
             onClick={() => {
               localStorage.clear();
               location.reload();
@@ -353,7 +352,7 @@ const Return: React.FC = () => {
           />
           <ReturnList
             setReturns={setReturns}
-            returns={filterProps.filteredReturns}
+            returns={filteredReturns}
             handleEditStatus={handleEditStatus}
             handleDeleteReturn={handleDeleteReturn}
             completeReturn={completeReturn}

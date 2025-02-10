@@ -26,18 +26,7 @@ const Reject: React.FC = () => {
 
   return (
     <main className="container">
-      {loading ? (
-        <LoadingIndicator />
-      ) : (
-        <>
-          <ReturnList
-            returns={filterProps.filteredReturns}
-            handleEditStatus={() => {}}
-            handleDeleteReturn={() => {}}
-            completeReturn={() => {}}
-          />
-        </>
-      )}
+      <LoadingIndicator />
     </main>
   );
 };

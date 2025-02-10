@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@date-io/date-fns": "^3.2.0",
+    "antd": "^5.23.4",
     "date-fns": "^3.6.0",
     "date-fns-jalali": "^4.1.0-0",
     "react": "^18.3.1",

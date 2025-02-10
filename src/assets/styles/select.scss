@@ -1,8 +1,4 @@
-@use "sass:math";
-@function toVw($target) {
-  $vw-context: (1920 * 0.01) * 1px;
-  @return math.div($target, $vw-context) * 1vw;
-}
+@use "./toVw.scss" as *;
 .select {
   display: grid;
   justify-items: center;
@@ -15,6 +11,10 @@
     border-radius: toVw(7px);
     padding: toVw(10px) toVw(5px);
     font-size: toVw(15px);
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
     option {
       text-align: left;
       padding: toVw(10px) toVw(5px);
