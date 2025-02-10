@@ -1,49 +1,98 @@
 import Select from "../SelectComponent";
 import { ReturnFiltersProps } from "../../types/returns";
+import "./returnFilters.scss";
 
 const ReturnFilters: React.FC<ReturnFiltersProps> = ({
-  selectedStatusFilter,
-  setSelectedStatusFilter,
-  selectedReasonFilter,
-  setSelectedReasonFilter,
-  selectedSellerFilter,
-  setSelectedSellerFilter,
-  selectedActiveFilter,
-  setSelectedActiveFilter,
-  returnStatusList,
-  returnReasonList,
-  returnSellerList,
-  returnActiveStatusList,
+  filters,
+  filterActions,
+  filterCounts,
+  filterReturns,
+  returns,
 }) => {
+  const handleFilterChange = (
+    key: keyof typeof filterActions,
+    value: string
+  ) => {
+    filterActions[key](value);
+  };
+
+  const generateFilterOptions = (
+    list: { id: number | string; value: string; label: string }[],
+    countMap: Record<string, number>,
+    defaultLabel: string
+  ) => {
+    const prefix = defaultLabel.replace(/ /g, "-");
+
+    return [
+      {
+        id: `${prefix}-all`,
+        value: "",
+        label: `${defaultLabel} (${returns.length})`,
+      },
+      ...list.map((item) => ({
+        ...item,
+        label: `${item.label} (${countMap[item.value] ?? 0})`,
+      })),
+    ];
+  };
+
   return (
     <section className="filters">
       <Select
+        returnSelect="status-filter select"
         label="Фильтр по статусу"
         placeholder="Выбери статус"
-        currentValue={selectedStatusFilter}
-        onChange={setSelectedStatusFilter}
-        options={returnStatusList}
+        currentValue={filters.selectedStatusFilter}
+        onChange={(value) =>
+          handleFilterChange("setSelectedStatusFilter", value)
+        }
+        options={generateFilterOptions(
+          filterReturns.returnStatusList,
+          filterCounts.StatusCounts,
+          "Все статусы"
+        )}
       />
       <Select
+        returnSelect="reason-filter select"
         label="Фильтр по причине"
         placeholder="Выбери причину"
-        currentValue={selectedReasonFilter}
-        onChange={setSelectedReasonFilter}
-        options={returnReasonList}
+        currentValue={filters.selectedReasonFilter}
+        onChange={(value) =>
+          handleFilterChange("setSelectedReasonFilter", value)
+        }
+        options={generateFilterOptions(
+          filterReturns.returnReasonList,
+          filterCounts.ReasonCounts,
+          "Все причины"
+        )}
       />
       <Select
+        returnSelect="seller-filter select"
         label="Фильтр по поставщику"
         placeholder="Выбери поставщика"
-        currentValue={selectedSellerFilter}
-        onChange={setSelectedSellerFilter}
-        options={returnSellerList}
+        currentValue={filters.selectedSellerFilter}
+        onChange={(value) =>
+          handleFilterChange("setSelectedSellerFilter", value)
+        }
+        options={generateFilterOptions(
+          filterReturns.returnSellerList,
+          filterCounts.SellerCounts,
+          "Все поставщики"
+        )}
       />
       <Select
+        returnSelect="active-filter select"
         label="Фильтр по активности"
         placeholder="Выбери активность"
-        currentValue={selectedActiveFilter}
-        onChange={setSelectedActiveFilter}
-        options={returnActiveStatusList}
+        currentValue={filters.selectedActiveFilter}
+        onChange={(value) =>
+          handleFilterChange("setSelectedActiveFilter", value)
+        }
+        options={generateFilterOptions(
+          filterReturns.returnActiveStatusList,
+          filterCounts.ActiveCounts,
+          "Вся активность"
+        )}
       />
     </section>
   );

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import "./loadingIndicator.scss";
 
 const LoadingComponent: React.FC = () => {
   const [dots, setDots] = useState<string>("");

@@ -1,12 +1,15 @@
 import React from "react";
 import { ReturnListProps } from "../../types/returns";
 import ReturnItem from "../ReturnItem/ReturnItem";
+import "./returnList.scss";
 
 const ReturnList: React.FC<ReturnListProps> = ({
   returns,
   handleEditStatus,
   handleDeleteReturn,
   completeReturn,
+  returnStatusList,
+  setReturns,
 }) => {
   return (
     <section className="info">
@@ -15,11 +18,13 @@ const ReturnList: React.FC<ReturnListProps> = ({
       ) : (
         returns.map((returnItem) => (
           <ReturnItem
+            returnStatusList={returnStatusList}
             key={returnItem.id}
             returnItem={returnItem}
             handleEditStatus={handleEditStatus}
             handleDeleteReturn={handleDeleteReturn}
             completeReturn={completeReturn}
+            setReturns={setReturns}
           />
         ))
       )}

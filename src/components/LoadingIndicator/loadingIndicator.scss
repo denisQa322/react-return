@@ -1,0 +1,8 @@
+@use "sass:math";
+@function toVw($target) {
+  $vw-context: (1920 * 0.01) * 1px;
+  @return math.div($target, $vw-context) * 1vw;
+}
+.loading-indicator {
+  font-size: toVw(20px);
+}

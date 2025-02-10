@@ -5,35 +5,33 @@ import Button from "../components/ButtonComponent";
 import Input from "../components/InputComponent";
 import Select from "../components/SelectComponent";
 import useLocalStorage from "../hooks/useLocalStorage";
-import useReturnFilters from "../hooks/useReturnFilters ";
+import useReturnFilters from "../hooks/useReturnFilters";
 import useReturnsCounts from "../hooks/useReturnsCounts";
 
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 import { v4 as uuidv4 } from "uuid";
-
-import DoneButton from "../assets/icons/done-button.svg";
-import EditButton from "../assets/icons/edit-button.svg";
-import DeleteButton from "../assets/icons/delete-button.svg";
 import AddButton from "../assets/icons/add-button.svg";
 
 import { ReturnSchema } from "../schemas/ReturnSchema";
 import { ReturnItemProps, returnListOption } from "../types/returns";
-import LoadingComponent from "../components/LoadingComponent";
+import LoadingComponent from "../components/LoadingIndicator/LoadingComponent";
+import ReturnFilters from "../components/ReturnFilters/ReturnFilters";
+import ReturnList from "../components/ReturnList/ReturnList";
 
 const returnActiveStatusList = [
   { id: 1, value: "active", label: "Активный" },
   { id: 2, value: "finished", label: "Завершенный" },
 ];
 
-const returnSellersList: returnListOption[] = [
+const returnSellerList: returnListOption[] = [
   { id: "АП", value: "АП", label: "АП" },
   { id: "РК", value: "РК", label: "РК" },
   { id: "ЮГ", value: "ЮГ", label: "ЮГ" },
   { id: "EMEX", value: "EMEX", label: "EMEX" },
 ];
 
-const returnReasonsList: returnListOption[] = [
+const returnReasonList: returnListOption[] = [
   { id: 1, value: "Б/У", label: "Б/У" },
   { id: 2, value: "Брак", label: "Брак" },
   { id: 3, value: "Неверное вложение", label: "Неверное вложение" },
@@ -75,14 +73,12 @@ const Return: React.FC = () => {
     filteredReturns,
   } = useReturnFilters(returns);
 
-  console.log(selectedActiveFilter);
-
   const { StatusCounts, ReasonCounts, SellerCounts, ActiveCounts } =
     useReturnsCounts(
       returns,
       returnStatusList,
-      returnReasonsList,
-      returnSellersList,
+      returnReasonList,
+      returnSellerList,
       returnActiveStatusList
     );
 
@@ -224,53 +220,40 @@ const Return: React.FC = () => {
     [setReturns]
   );
 
-  const getReturnStatusClass = (status: string) => {
-    switch (status) {
-      case "Новый возврат":
-        return "new-return";
-      case "Запрос поставщику":
-        return "status-sent";
-      case "Запрос на возврат":
-        return "status-return-requested";
-      case "Запрос на утиль":
-        return "status-to-dispose";
-      case "Возврат получен":
-        return "status-return-received";
-      case "Возврат проведен":
-        return "status-return-processed";
-      case "finished":
-        return "status-finished";
-      default:
-        return "";
-    }
-  };
-
   const completeReturn = useCallback(
     (id: string) => {
-      setReturns((prevReturns) =>
-        prevReturns.map((r) =>
+      setReturns((prevReturns) => {
+        const updatedReturns = prevReturns.map((r) =>
           r.id === id
             ? {
                 ...r,
-                active: r.active === "active" ? "finished" : "active",
+                active:
+                  r.active === "active"
+                    ? "finished"
+                    : ("active" as "active" | "finished"),
                 status: "Завершенный",
               }
             : r
-        )
-      );
+        );
+
+        localStorage.setItem("returns", JSON.stringify(updatedReturns));
+        return updatedReturns;
+      });
     },
     [setReturns]
   );
 
   useEffect(() => {
-    setLoading(true); // Показываем индикатор загрузки
+    setLoading(true);
 
     setTimeout(() => {
-      const savedReturns = JSON.parse(localStorage.getItem("returns") || "[]"); // Имитация загрузки с "сервера"
+      const savedReturns = JSON.parse(localStorage.getItem("returns") || "[]");
       setReturns(savedReturns);
-      setLoading(false); // Скрываем индикатор после загрузки
-    }, 2000); // 2 секунды задержки, можно менять
+      setLoading(false);
+    }, 2000);
   }, []);
+
+  const filterProps = useReturnFilters(returns);
 
   return (
     <main className="container">
@@ -319,7 +302,7 @@ const Return: React.FC = () => {
                   returnSelect="return-create-reason select"
                   currentValue={selectedReason}
                   onChange={handleReasonChange}
-                  options={returnReasonsList}
+                  options={returnReasonList}
                   error={errors.reason?.[0]}
                 />
                 <Select
@@ -328,7 +311,7 @@ const Return: React.FC = () => {
                   returnSelect="return-create-seller select"
                   currentValue={selectedSeller}
                   onChange={handleSellerChange}
-                  options={returnSellersList}
+                  options={returnSellerList}
                   error={errors.seller?.[0]}
                 />
               </div>
@@ -341,158 +324,41 @@ const Return: React.FC = () => {
               />
             </div>
           </section>
-          <section className="filters">
-            <Select
-              returnSelect="status-filter select"
-              label="Фильтр по статусу"
-              placeholder="Выбери статус"
-              currentValue={selectedStatusFilter}
-              onChange={setSelectedStatusFilter}
-              options={[
-                { id: -1, value: "", label: `Все статусы (${returns.length})` },
-                ...returnStatusList.map((status) => ({
-                  ...status,
-                  label: `${status.label} (${StatusCounts[status.value] ?? 0})`,
-                })),
-              ]}
-            />
-            <Select
-              returnSelect="reason-filter select"
-              label="Фильтр по причине"
-              placeholder="Выбери причину"
-              currentValue={selectedReasonFilter}
-              onChange={setSelectedReasonFilter}
-              options={[
-                { id: -2, value: "", label: `Все причины (${returns.length})` },
-                ...returnReasonsList.map((reason) => ({
-                  ...reason,
-                  label: `${reason.label} (${ReasonCounts[reason.value] ?? 0})`,
-                })),
-              ]}
-            />
-            <Select
-              returnSelect="seller-filter select"
-              label="Фильтр по поставщику"
-              placeholder="Выбери поставщика"
-              currentValue={selectedSellerFilter}
-              onChange={setSelectedSellerFilter}
-              options={[
-                {
-                  id: -3,
-                  value: "",
-                  label: `Все поставщики(${returns.length})`,
-                },
-                ...returnSellersList.map((seller) => ({
-                  ...seller,
-                  label: `${seller.label} (${SellerCounts[seller.value] ?? 0})`,
-                })),
-              ]}
-            />
-            <Select
-              returnSelect="active-filter select"
-              label="Фильтр по активности"
-              placeholder="Выбери активность"
-              currentValue={selectedActiveFilter}
-              onChange={setSelectedActiveFilter}
-              options={[
-                {
-                  id: -4,
-                  value: "",
-                  label: `Все заказы (${returns.length})`,
-                },
-                ...returnActiveStatusList.map((active) => ({
-                  ...active,
-                  label: `${active.label} (${ActiveCounts[active.value] ?? 0})`,
-                })),
-              ]}
-            />
-          </section>
-          <section className="info">
-            {filteredReturns.length === 0 ? (
-              <p className="info-empty">Нет возвратов</p>
-            ) : (
-              filteredReturns.map((r) => (
-                <div
-                  key={r.id}
-                  className={`return-info ${getReturnStatusClass(r.status)} ${
-                    r.active
-                  }`}
-                >
-                  <div className="return-info-content">
-                    <div className="return-reference">
-                      <label>Референс</label>
-                      <p>{r.reference}</p>
-                    </div>
-                    <div className="return-quantity">
-                      <label>Количество</label>
-                      <p>{r.quantity}</p>
-                    </div>
-                    <div className="return-price">
-                      <label>Стоимость</label>
-                      <p>{r.price}₸</p>
-                    </div>
-                    <div className="return-date">
-                      <label>Дата</label>
-                      <p>{r.date}</p>
-                    </div>
-                    <div className="return-seller">
-                      <label>Поставщик</label>
-                      <p>{r.seller}</p>
-                    </div>
-                    <div className="return-reason">
-                      <label>Причина возврата</label>
-                      <p>{r.reason}</p>
-                    </div>
-                    <div className="return-status">
-                      <label>Статус возврата</label>
-                      {r.isEditing ? (
-                        <Select
-                          placeholder="Выбери статус"
-                          returnSelect="return-status select"
-                          currentValue={r.status}
-                          options={returnStatusList}
-                          onChange={(newStatus) => {
-                            setReturns((prevReturns) =>
-                              prevReturns.map((item) =>
-                                item.id === r.id
-                                  ? { ...item, status: newStatus }
-                                  : item
-                              )
-                            );
-                          }}
-                        />
-                      ) : (
-                        <p>{r.status}</p>
-                      )}
-                    </div>
-                    <div className="return-info-buttons">
-                      <Button
-                        btnClass="return-done-icon"
-                        btnImgSrc={DoneButton}
-                        buttonAlt="Завершить возврат"
-                        onClick={() => completeReturn(r.id)}
-                        disabled={r.active === "finished"}
-                      />
-                      <Button
-                        btnClass="return-edit-icon"
-                        btnImgSrc={EditButton}
-                        buttonAlt="Изменить возврат"
-                        onClick={() => handleEditStatus(r.id)}
-                        disabled={r.active === "finished"}
-                      />
-                      <Button
-                        btnClass="return-delete-icon"
-                        btnImgSrc={DeleteButton}
-                        buttonAlt="Удалить возврат"
-                        onClick={() => handleDeleteReturn(r.id)}
-                        disabled={r.active === "finished"}
-                      />
-                    </div>
-                  </div>
-                </div>
-              ))
-            )}
-          </section>
+          <ReturnFilters
+            filters={{
+              selectedStatusFilter,
+              selectedSellerFilter,
+              selectedReasonFilter,
+              selectedActiveFilter,
+            }}
+            filterActions={{
+              setSelectedStatusFilter,
+              setSelectedReasonFilter,
+              setSelectedSellerFilter,
+              setSelectedActiveFilter,
+            }}
+            filterCounts={{
+              StatusCounts,
+              ReasonCounts,
+              SellerCounts,
+              ActiveCounts,
+            }}
+            filterReturns={{
+              returnStatusList,
+              returnSellerList,
+              returnReasonList,
+              returnActiveStatusList,
+            }}
+            returns={returns}
+          />
+          <ReturnList
+            setReturns={setReturns}
+            returns={filterProps.filteredReturns}
+            handleEditStatus={handleEditStatus}
+            handleDeleteReturn={handleDeleteReturn}
+            completeReturn={completeReturn}
+            returnStatusList={returnStatusList}
+          />
         </>
       )}
     </main>

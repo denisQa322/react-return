@@ -1,0 +1,11 @@
+@use "sass:math";
+@function toVw($target) {
+  $vw-context: (1920 * 0.01) * 1px;
+  @return math.div($target, $vw-context) * 1vw;
+}
+.filters {
+  padding-bottom: toVw(25px);
+  justify-items: start;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(toVw(250px), 1fr));
+}

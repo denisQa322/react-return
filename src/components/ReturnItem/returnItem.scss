@@ -1,0 +1,59 @@
+@use "sass:math";
+@function toVw($target) {
+  $vw-context: (1920 * 0.01) * 1px;
+  @return math.div($target, $vw-context) * 1vw;
+}
+.return-info {
+  max-width: toVw(500px);
+  width: 100%;
+  border: toVw(1px) solid #0067a4;
+  border-radius: toVw(10px);
+  padding: toVw(10px);
+  display: grid;
+  row-gap: toVw(15px);
+  &-content {
+    padding: toVw(10px);
+    display: grid;
+    gap: toVw(15px);
+    div {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+    }
+    label {
+      font-size: toVw(20px);
+      text-align: left;
+    }
+    p {
+      margin-left: auto;
+      font-size: toVw(20px);
+    }
+    div.return-info-buttons {
+      display: grid;
+      justify-items: center;
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+}
+
+.finished {
+  opacity: 0.5;
+}
+.status-sent {
+  border-left: toVw(10px) solid #1e90ff;
+}
+
+.status-return-requested {
+  border-left: toVw(10px) solid #ff8c00;
+}
+
+.status-to-dispose {
+  border-left: toVw(10px) solid #ff6347;
+}
+
+.status-return-received {
+  border-left: toVw(10px) solid #32cd32;
+}
+
+.status-return-processed {
+  border-left: toVw(10px) solid #00bcd4;
+}

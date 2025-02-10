@@ -1,8 +1,8 @@
 import { useMemo } from "react";
-import { ReturnItem, returnListOption } from "../types/returns";
+import { ReturnItemProps, returnListOption } from "../types/returns";
 
 const useReturnsCounts = (
-  returns: ReturnItem[],
+  returns: ReturnItemProps[],
   returnStatusList: returnListOption[],
   returnReasonsList: returnListOption[],
   returnSellersList: returnListOption[],

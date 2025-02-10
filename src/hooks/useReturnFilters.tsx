@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from "react";
-import { ReturnItem } from "../types/returns";
+import { ReturnItemProps } from "../types/returns";
 
 const STORAGE_KEY = "returnFilters";
 
@@ -9,7 +9,7 @@ const getInitialFilter = (key: string, defaultValue: string) => {
   return parsedFilters[key] !== undefined ? parsedFilters[key] : defaultValue;
 };
 
-const useReturnFilters = (returns: ReturnItem[]) => {
+const useReturnFilters = (returns: ReturnItemProps[]) => {
   const [selectedStatusFilter, setSelectedStatusFilter] = useState(() =>
     getInitialFilter("status", "")
   );
@@ -23,23 +23,6 @@ const useReturnFilters = (returns: ReturnItem[]) => {
     getInitialFilter("active", "active")
   );
 
-  useEffect(() => {
-    localStorage.setItem(
-      STORAGE_KEY,
-      JSON.stringify({
-        status: selectedStatusFilter,
-        reason: selectedReasonFilter,
-        seller: selectedSellerFilter,
-        active: selectedActiveFilter,
-      })
-    );
-  }, [
-    selectedStatusFilter,
-    selectedReasonFilter,
-    selectedSellerFilter,
-    selectedActiveFilter,
-  ]);
-
   const filteredReturns = useMemo(() => {
     return returns.filter((item) => {
       return (
@@ -51,6 +34,22 @@ const useReturnFilters = (returns: ReturnItem[]) => {
     });
   }, [
     returns,
+    selectedStatusFilter,
+    selectedReasonFilter,
+    selectedSellerFilter,
+    selectedActiveFilter,
+  ]);
+  useEffect(() => {
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({
+        status: selectedStatusFilter,
+        reason: selectedReasonFilter,
+        seller: selectedSellerFilter,
+        active: selectedActiveFilter,
+      })
+    );
+  }, [
     selectedStatusFilter,
     selectedReasonFilter,
     selectedSellerFilter,

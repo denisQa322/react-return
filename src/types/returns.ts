@@ -18,19 +18,31 @@ export interface ReturnItemProps {
 }
 
 export interface ReturnFiltersProps {
-  selectedStatusFilter: string;
-  setSelectedStatusFilter: (value: string) => void;
-  selectedReasonFilter: string;
-  setSelectedReasonFilter: (value: string) => void;
-  selectedSellerFilter: string;
-  setSelectedSellerFilter: (value: string) => void;
-  selectedActiveFilter: string;
-  setSelectedActiveFilter: (value: string) => void;
-
-  returnStatusList: { id: number; value: string; label: string }[];
-  returnReasonList: { id: number; value: string; label: string }[];
-  returnSellerList: { id: number; value: string; label: string }[];
-  returnActiveStatusList: { id: number; value: string; label: string }[];
+  filters: {
+    selectedStatusFilter: string;
+    selectedReasonFilter: string;
+    selectedSellerFilter: string;
+    selectedActiveFilter: string;
+  };
+  filterActions: {
+    setSelectedStatusFilter: (value: string) => void;
+    setSelectedReasonFilter: (value: string) => void;
+    setSelectedSellerFilter: (value: string) => void;
+    setSelectedActiveFilter: (value: string) => void;
+  };
+  filterReturns: {
+    returnStatusList: { id: string | number; value: string; label: string }[];
+    returnReasonList: { id: string | number; value: string; label: string }[];
+    returnSellerList: { id: string | number; value: string; label: string }[];
+    returnActiveStatusList: { id: number; value: string; label: string }[];
+  };
+  filterCounts: {
+    StatusCounts: Record<string, number>;
+    ReasonCounts: Record<string, number>;
+    SellerCounts: Record<string, number>;
+    ActiveCounts: Record<string, number>;
+  };
+  returns: ReturnItemProps[];
 }
 
 export interface ReturnListProps {
@@ -38,6 +50,8 @@ export interface ReturnListProps {
   handleEditStatus: (id: string) => void;
   handleDeleteReturn: (id: string) => void;
   completeReturn: (id: string) => void;
+  returnStatusList: { id: string | number; value: string; label: string }[];
+  setReturns: (action: (prev: ReturnItemProps[]) => ReturnItemProps[]) => void;
 }
 
 export interface ReturnItemListProps {
@@ -45,4 +59,6 @@ export interface ReturnItemListProps {
   handleEditStatus: (id: string) => void;
   handleDeleteReturn: (id: string) => void;
   completeReturn: (id: string) => void;
+  returnStatusList: { id: string | number; value: string; label: string }[];
+  setReturns: (action: (prev: ReturnItemProps[]) => ReturnItemProps[]) => void;
 }

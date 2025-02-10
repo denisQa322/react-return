@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react";
-import useReturnFilters from "../hooks/useReturnFilters ";
+import useReturnFilters from "../hooks/useReturnFilters";
 import useLocalStorage from "../hooks/useLocalStorage";
-import ReturnFilters from "../components/ReturnFilters/ReturnFilters";
 import ReturnList from "../components/ReturnList/ReturnList";
-import LoadingIndicator from "../components/LoadingComponent";
+import LoadingIndicator from "../components/LoadingIndicator/LoadingComponent";
 import { ReturnItemProps } from "../types/returns";
 
 const Reject: React.FC = () => {
@@ -17,8 +16,10 @@ const Reject: React.FC = () => {
     setTimeout(() => {
       const savedReturns = JSON.parse(localStorage.getItem("returns") || "[]");
       setReturns(savedReturns);
+      console.log(setReturns(savedReturns));
       setLoading(false);
     }, 1000);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const filterProps = useReturnFilters(returns);
@@ -29,13 +30,6 @@ const Reject: React.FC = () => {
         <LoadingIndicator />
       ) : (
         <>
-          <ReturnFilters
-            returnStatusList={[]}
-            returnReasonList={[]}
-            returnSellerList={[]}
-            returnActiveStatusList={[]}
-            {...filterProps}
-          />
           <ReturnList
             returns={filterProps.filteredReturns}
             handleEditStatus={() => {}}
