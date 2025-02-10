@@ -11,8 +11,10 @@
     border-radius: toVw(7px);
     padding: toVw(10px) toVw(5px);
     font-size: toVw(15px);
+    text-align: center;
   }
   .error-container {
     height: toVw(25px);
+    margin-bottom: toVw(10px);
   }
 }
