@@ -62,3 +62,9 @@ export interface ReturnItemListProps {
   returnStatusList: { id: string | number; value: string; label: string }[];
   setReturns: (action: (prev: ReturnItemProps[]) => ReturnItemProps[]) => void;
 }
+
+export interface ReturnFormProps {
+  setReturns: (action: (prev: ReturnItemProps[]) => ReturnItemProps[]) => void;
+  returnReasonList: { id: string | number; value: string; label: string }[];
+  returnSellerList: { id: string | number; value: string; label: string }[];
+}
