@@ -1,4 +1,4 @@
-@use "../../assets/styles/toVw.scss" as *;
+@use "../../../assets/styles/toVw.scss" as *;
 .info {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(toVw(500px), 1fr));

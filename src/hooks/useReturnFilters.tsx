@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from "react";
-import { ReturnItemProps } from "../types/returns";
+import { ItemProps } from "../types/types";
 
 const STORAGE_KEY = "returnFilters";
 
@@ -9,7 +9,7 @@ const getInitialFilter = (key: string, defaultValue: string) => {
   return parsedFilters[key] !== undefined ? parsedFilters[key] : defaultValue;
 };
 
-const useReturnFilters = (returns: ReturnItemProps[]) => {
+const useReturnFilters = (returns: ItemProps[]) => {
   const [selectedStatusFilter, setSelectedStatusFilter] = useState(() =>
     getInitialFilter("status", "")
   );

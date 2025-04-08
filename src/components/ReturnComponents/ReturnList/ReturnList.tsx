@@ -1,5 +1,5 @@
 import React from "react";
-import { ReturnListProps } from "../../types/returns";
+import { ReturnListProps } from "../../../types/types";
 import ReturnItem from "../ReturnItem/ReturnItem";
 import "./returnList.scss";
 

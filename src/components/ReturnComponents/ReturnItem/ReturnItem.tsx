@@ -1,10 +1,10 @@
-import Button from "../ButtonComponent";
-import DoneButton from "../../assets/icons/done-button.svg";
-import EditButton from "../../assets/icons/edit-button.svg";
-import DeleteButton from "../../assets/icons/delete-button.svg";
-import { ReturnItemListProps } from "../../types/returns";
+import DoneButton from "../../../assets/icons/done-button.svg";
+import EditButton from "../../../assets/icons/edit-button.svg";
+import DeleteButton from "../../../assets/icons/delete-button.svg";
+import { ReturnItemListProps } from "../../../types/types";
 import "./returnItem.scss";
-import Select from "../SelectComponent";
+import Select from "../../SelectComponent";
+import Button from "../../ButtonComponent";
 
 const getReturnStatusClass = (status: string) => {
   switch (status) {

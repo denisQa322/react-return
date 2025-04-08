@@ -1,17 +1,17 @@
 import React, { useCallback, useMemo, useState } from "react";
-import Button from "../ButtonComponent";
+import Button from "../../ButtonComponent";
 
-import { ReturnSchema } from "../../schemas/ReturnSchema";
+import { ReturnSchema } from "../../../schemas/ReturnSchema";
 
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 import { v4 as uuidv4 } from "uuid";
 
-import AddButton from "../../assets/icons/add-button.svg";
+import AddButton from "../../../assets/icons/add-button.svg";
 
-import { ReturnFormProps, ReturnItemProps } from "../../types/returns";
-import Select from "../SelectComponent";
-import Input from "../InputComponent";
+import { ReturnFormProps, ItemProps } from "../../../types/types";
+import Select from "../../SelectComponent";
+import Input from "../../InputComponent";
 
 const ReturnForm: React.FC<ReturnFormProps> = ({
   setReturns,
@@ -108,7 +108,7 @@ const ReturnForm: React.FC<ReturnFormProps> = ({
   };
 
   const handleAddReturn = useCallback(() => {
-    const newReturn: ReturnItemProps = {
+    const newReturn: ItemProps = {
       id: uuidv4(),
       reference,
       quantity: Number(quantity),
@@ -173,7 +173,7 @@ const ReturnForm: React.FC<ReturnFormProps> = ({
             returnSelect="return-create-reason select"
             currentValue={selectedReason}
             onChange={handleReasonChange}
-            options={returnSellerList}
+            options={returnReasonList}
             error={errors.reason?.[0]}
           />
           <Select
@@ -182,7 +182,7 @@ const ReturnForm: React.FC<ReturnFormProps> = ({
             returnSelect="return-create-seller select"
             currentValue={selectedSeller}
             onChange={handleSellerChange}
-            options={returnReasonList}
+            options={returnSellerList}
             error={errors.seller?.[0]}
           />
         </div>

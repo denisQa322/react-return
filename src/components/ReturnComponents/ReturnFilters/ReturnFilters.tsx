@@ -1,12 +1,12 @@
-import Select from "../SelectComponent";
-import { ReturnFiltersProps } from "../../types/returns";
+import Select from "../../SelectComponent";
+import { ReturnFiltersProps } from "../../../types/types";
 import "./returnFilters.scss";
 
 const ReturnFilters: React.FC<ReturnFiltersProps> = ({
   filters,
   filterActions,
-  filterCounts,
   filterReturns,
+  filterCounts,
   returns,
 }) => {
   const handleFilterChange = (

@@ -1,6 +1,7 @@
 @use "./toVw.scss" as *;
 .button-wrapper {
-  button.return-create-icon {
+  button.return-create-icon,
+  .reject-create-icon {
     margin-left: auto;
     background: none;
     border: none;

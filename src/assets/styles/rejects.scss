@@ -1,4 +1,32 @@
 @use "./toVw.scss" as *;
-* {
-  text-align: center;
+
+main {
+  .clean-storage {
+    background: none;
+    border: toVw(1px) solid #0067a4;
+    padding: toVw(15px);
+    border-radius: toVw(5px);
+    cursor: pointer;
+    margin-left: 45%;
+    font-size: toVw(15px);
+  }
+  .create {
+    .reject-create {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: toVw(70px);
+      align-items: center;
+      padding-bottom: toVw(25px);
+      &-inputs {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: toVw(70px);
+      }
+      &-selects {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: toVw(70px);
+      }
+    }
+  }
 }

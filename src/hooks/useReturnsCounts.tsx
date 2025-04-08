@@ -1,12 +1,12 @@
 import { useMemo } from "react";
-import { ReturnItemProps, returnListOption } from "../types/returns";
+import { ItemProps, SelectOption } from "../types/types";
 
 const useReturnsCounts = (
-  returns: ReturnItemProps[],
-  returnStatusList: returnListOption[],
-  returnReasonsList: returnListOption[],
-  returnSellersList: returnListOption[],
-  returnActiveStatusList: returnListOption[]
+  returns: ItemProps[],
+  returnStatusList: SelectOption[],
+  returnReasonsList: SelectOption[],
+  returnSellersList: SelectOption[],
+  returnActiveStatusList: SelectOption[]
 ) => {
   const StatusCounts = useMemo(() => {
     const counts: Record<string, number> = {};

@@ -5,26 +5,26 @@ import useLocalStorage from "../hooks/useLocalStorage";
 import useReturnFilters from "../hooks/useReturnFilters";
 import useReturnsCounts from "../hooks/useReturnsCounts";
 
-import { ReturnItemProps, returnListOption } from "../types/returns";
+import { ItemProps, SelectOption } from "../types/types";
 
 import LoadingComponent from "../components/LoadingIndicator/LoadingComponent";
-import ReturnFilters from "../components/ReturnFilters/ReturnFilters";
-import ReturnList from "../components/ReturnList/ReturnList";
-import ReturnForm from "../components/ReturnForm/ReturnForm";
+import ReturnFilters from "../components/ReturnComponents/ReturnFilters/ReturnFilters";
+import ReturnList from "../components/ReturnComponents/ReturnList/ReturnList";
+import ReturnForm from "../components/ReturnComponents/ReturnForm/ReturnForm";
 
 const returnActiveStatusList = [
   { id: 1, value: "active", label: "Активный" },
   { id: 2, value: "finished", label: "Завершенный" },
 ];
 
-const returnSellerList: returnListOption[] = [
+const returnSellerList: SelectOption[] = [
   { id: "АП", value: "АП", label: "АП" },
   { id: "РК", value: "РК", label: "РК" },
   { id: "ЮГ", value: "ЮГ", label: "ЮГ" },
   { id: "EMEX", value: "EMEX", label: "EMEX" },
 ];
 
-const returnReasonList: returnListOption[] = [
+const returnReasonList: SelectOption[] = [
   { id: 1, value: "Б/У", label: "Б/У" },
   { id: 2, value: "Брак", label: "Брак" },
   { id: 3, value: "Неверное вложение", label: "Неверное вложение" },
@@ -32,7 +32,7 @@ const returnReasonList: returnListOption[] = [
   { id: 5, value: "Повреждение", label: "Повреждение" },
 ];
 
-const returnStatusList: returnListOption[] = [
+const returnStatusList: SelectOption[] = [
   { id: 0, value: "Новый возврат", label: "Новый возврат" },
   { id: 1, value: "Запрос поставщику", label: "Запрос поставщику" },
   { id: 2, value: "Запрос на возврат", label: "Запрос на возврат" },
@@ -42,9 +42,10 @@ const returnStatusList: returnListOption[] = [
 ];
 
 const Return: React.FC = () => {
-  const { state: returns, update: setReturns } = useLocalStorage<
-    ReturnItemProps[]
-  >("returns", []);
+  const { state: returns, update: setReturns } = useLocalStorage<ItemProps[]>(
+    "returns",
+    []
+  );
   const [loading, setLoading] = useState<boolean>(true);
 
   const {
