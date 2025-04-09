@@ -9,14 +9,14 @@ import { v4 as uuidv4 } from "uuid";
 
 import AddButton from "../../../assets/icons/add-button.svg";
 
-import { ReturnFormProps, ItemProps } from "../../../types/types";
+import { GenericFormProps, ItemProps } from "../../../types/types";
 import Select from "../../SelectComponent";
 import Input from "../../InputComponent";
 
-const ReturnForm: React.FC<ReturnFormProps> = ({
-  setReturns,
-  returnSellerList,
-  returnReasonList,
+const ReturnForm: React.FC<GenericFormProps> = ({
+  setItems,
+  sellerList,
+  reasonList,
 }) => {
   const [reference, setReference] = useState<string>("");
   const [quantity, setQuantity] = useState<string>("");
@@ -127,7 +127,7 @@ const ReturnForm: React.FC<ReturnFormProps> = ({
       return;
     }
 
-    setReturns((prevReturns) => [...prevReturns, newReturn]);
+    setItems((prev) => [...prev, newReturn]);
     resetForm();
   }, [
     reference,
@@ -136,7 +136,7 @@ const ReturnForm: React.FC<ReturnFormProps> = ({
     date,
     selectedReason,
     selectedSeller,
-    setReturns,
+    setItems,
   ]);
 
   return (
@@ -173,7 +173,7 @@ const ReturnForm: React.FC<ReturnFormProps> = ({
             returnSelect="return-create-reason select"
             currentValue={selectedReason}
             onChange={handleReasonChange}
-            options={returnReasonList}
+            options={reasonList}
             error={errors.reason?.[0]}
           />
           <Select
@@ -182,7 +182,7 @@ const ReturnForm: React.FC<ReturnFormProps> = ({
             returnSelect="return-create-seller select"
             currentValue={selectedSeller}
             onChange={handleSellerChange}
-            options={returnSellerList}
+            options={sellerList}
             error={errors.seller?.[0]}
           />
         </div>

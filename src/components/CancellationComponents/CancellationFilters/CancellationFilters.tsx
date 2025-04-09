@@ -1,12 +1,12 @@
 import Select from "../../SelectComponent";
-import { CancellationFiltersProps } from "../../../types/types";
+import { GenericFiltersProps } from "../../../types/types";
 
-const CancellationFilters: React.FC<CancellationFiltersProps> = ({
+const CancellationFilters: React.FC<GenericFiltersProps> = ({
   filters,
   filterActions,
-  filterCancellations,
+  filterData,
   filterCounts,
-  cancellations,
+  items,
 }) => {
   const handleFilterChange = (
     key: keyof typeof filterActions,
@@ -26,7 +26,7 @@ const CancellationFilters: React.FC<CancellationFiltersProps> = ({
       {
         id: `${prefix}-all`,
         value: "",
-        label: `${defaultLabel} (${cancellations.length})`,
+        label: `${defaultLabel} (${items.length})`,
       },
       ...list.map((item) => ({
         ...item,
@@ -46,7 +46,7 @@ const CancellationFilters: React.FC<CancellationFiltersProps> = ({
           handleFilterChange("setSelectedStatusFilter", value)
         }
         options={generateFilterOptions(
-          filterCancellations.cancellationStatusList,
+          filterData.StatusList,
           filterCounts.StatusCounts,
           "Все статусы"
         )}
@@ -60,7 +60,7 @@ const CancellationFilters: React.FC<CancellationFiltersProps> = ({
           handleFilterChange("setSelectedReasonFilter", value)
         }
         options={generateFilterOptions(
-          filterCancellations.cancellationReasonList,
+          filterData.ReasonList,
           filterCounts.ReasonCounts,
           "Все причины"
         )}
@@ -74,7 +74,7 @@ const CancellationFilters: React.FC<CancellationFiltersProps> = ({
           handleFilterChange("setSelectedSellerFilter", value)
         }
         options={generateFilterOptions(
-          filterCancellations.cancellationSellerList,
+          filterData.SellerList,
           filterCounts.SellerCounts,
           "Все поставщики"
         )}
@@ -88,7 +88,7 @@ const CancellationFilters: React.FC<CancellationFiltersProps> = ({
           handleFilterChange("setSelectedActiveFilter", value)
         }
         options={generateFilterOptions(
-          filterCancellations.cancellationActiveStatusList,
+          filterData.ActiveStatusList,
           filterCounts.ActiveCounts,
           "Вся активность"
         )}

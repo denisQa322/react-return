@@ -1,7 +1,7 @@
 import DoneButton from "../../../assets/icons/done-button.svg";
 import EditButton from "../../../assets/icons/edit-button.svg";
 import DeleteButton from "../../../assets/icons/delete-button.svg";
-import { ReturnItemListProps } from "../../../types/types";
+import { GenericItemListProps } from "../../../types/types";
 import "./returnItem.scss";
 import Select from "../../SelectComponent";
 import Button from "../../ButtonComponent";
@@ -27,65 +27,63 @@ const getReturnStatusClass = (status: string) => {
   }
 };
 
-const ReturnItem: React.FC<ReturnItemListProps> = ({
-  returnItem,
+const ReturnItem: React.FC<GenericItemListProps> = ({
+  item,
   handleEditStatus,
-  handleDeleteReturn,
-  completeReturn,
-  setReturns,
-  returnStatusList,
+  handleDelete,
+  completeItem,
+  setItems,
+  statusList,
 }) => {
   return (
     <div
-      className={`return-info  ${getReturnStatusClass(returnItem.status)} ${
-        returnItem.active
+      className={`return-info  ${getReturnStatusClass(item.status)} ${
+        item.active
       }`}
     >
       <div className="return-info-content">
         <div className="return-reference">
           <label>Референс</label>
-          <p>{returnItem.reference}</p>
+          <p>{item.reference}</p>
         </div>
         <div className="return-quantity">
           <label>Количество</label>
-          <p>{returnItem.quantity}</p>
+          <p>{item.quantity}</p>
         </div>
         <div className="return-price">
           <label>Стоимость</label>
-          <p>{returnItem.price}₸</p>
+          <p>{item.price}₸</p>
         </div>
         <div className="return-date">
           <label>Дата</label>
-          <p>{returnItem.date}</p>
+          <p>{item.date}</p>
         </div>
         <div className="return-seller">
           <label>Поставщик</label>
-          <p>{returnItem.seller}</p>
+          <p>{item.seller}</p>
         </div>
         <div className="return-reason">
           <label>Причина возврата</label>
-          <p>{returnItem.reason}</p>
+          <p>{item.reason}</p>
         </div>
         <div className="return-status">
           <label>Статус возврата</label>
-          {returnItem.isEditing ? (
+          {item.isEditing ? (
             <Select
               placeholder="Выбери статус"
               returnSelect="return-status select"
-              currentValue={returnItem.status}
-              options={returnStatusList}
+              currentValue={item.status}
+              options={statusList}
               onChange={(newStatus) => {
-                setReturns((prevReturns) =>
-                  prevReturns.map((item) =>
-                    item.id === returnItem.id
-                      ? { ...item, status: newStatus }
-                      : item
+                setItems((prev) =>
+                  prev.map((item) =>
+                    item.id === item.id ? { ...item, status: newStatus } : item
                   )
                 );
               }}
             />
           ) : (
-            <p>{returnItem.status}</p>
+            <p>{item.status}</p>
           )}
         </div>
         <div className="return-info-buttons">
@@ -93,22 +91,22 @@ const ReturnItem: React.FC<ReturnItemListProps> = ({
             btnClass="return-done-icon"
             buttonAlt="Завершить возврат"
             btnImgSrc={DoneButton}
-            onClick={() => completeReturn(returnItem.id)}
-            disabled={returnItem.active === "finished"}
+            onClick={() => completeItem(item.id)}
+            disabled={item.active === "finished"}
           />
           <Button
             btnClass="return-edit-icon"
             buttonAlt="Изменить статус возврата"
             btnImgSrc={EditButton}
-            onClick={() => handleEditStatus(returnItem.id)}
-            disabled={returnItem.active === "finished"}
+            onClick={() => handleEditStatus(item.id)}
+            disabled={item.active === "finished"}
           />
           <Button
             btnClass="return-delete-icon"
             buttonAlt="Удалить возврат"
             btnImgSrc={DeleteButton}
-            onClick={() => handleDeleteReturn(returnItem.id)}
-            disabled={returnItem.active === "finished"}
+            onClick={() => handleDelete(item.id)}
+            disabled={item.active === "finished"}
           />
         </div>
       </div>

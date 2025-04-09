@@ -1,30 +1,30 @@
 import React from "react";
-import { ReturnListProps } from "../../../types/types";
+import { GenericListProps } from "../../../types/types";
 import ReturnItem from "../ReturnItem/ReturnItem";
 import "./returnList.scss";
 
-const ReturnList: React.FC<ReturnListProps> = ({
-  returns,
+const ReturnList: React.FC<GenericListProps> = ({
+  items,
   handleEditStatus,
-  handleDeleteReturn,
-  completeReturn,
-  returnStatusList,
-  setReturns,
+  handleDelete,
+  completeItem,
+  statusList,
+  setItems,
 }) => {
   return (
     <section className="info">
-      {returns.length === 0 ? (
+      {items.length === 0 ? (
         <p className="info-empty">Нет возвратов</p>
       ) : (
-        returns.map((returnItem) => (
+        items.map((returnItem) => (
           <ReturnItem
-            returnStatusList={returnStatusList}
+            statusList={statusList}
             key={returnItem.id}
             returnItem={returnItem}
             handleEditStatus={handleEditStatus}
-            handleDeleteReturn={handleDeleteReturn}
-            completeReturn={completeReturn}
-            setReturns={setReturns}
+            handleDelete={handleDelete}
+            completeItem={completeItem}
+            setItems={setItems}
           />
         ))
       )}

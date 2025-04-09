@@ -9,14 +9,14 @@ import { v4 as uuidv4 } from "uuid";
 
 import AddButton from "../../../assets/icons/add-button.svg";
 
-import { CancellationFormProps, ItemProps } from "../../../types/types";
+import { GenericFormProps, ItemProps } from "../../../types/types";
 import Select from "../../SelectComponent";
 import Input from "../../InputComponent";
 
-const CancellationForm: React.FC<CancellationFormProps> = ({
-  setCancellations,
-  cancellationSellerList,
-  cancellationReasonList,
+const CancellationForm: React.FC<GenericFormProps> = ({
+  setItems,
+  sellerList,
+  reasonList,
 }) => {
   const [reference, setReference] = useState<string>("");
   const [quantity, setQuantity] = useState<string>("");
@@ -106,45 +106,38 @@ const CancellationForm: React.FC<CancellationFormProps> = ({
     setErrors({});
   };
 
-  const handleAddCancellation = useCallback(
-    () => {
-      const newCancellation: ItemProps = {
-        id: uuidv4(),
-        reference,
-        quantity: Number(quantity),
-        price: Number(price),
-        date,
-        reason: selectedReason,
-        seller: selectedSeller,
-        status: "Новая отмена",
-        active: "active",
-      };
-
-      const validationResult = CancellationSchema.safeParse(newCancellation);
-      if (!validationResult.success) {
-        const { fieldErrors } = validationResult.error.flatten();
-        setErrors(fieldErrors);
-        return;
-      }
-
-      setCancellations((prevCancellations) => [
-        ...prevCancellations,
-        newCancellation,
-      ]);
-
-      resetForm();
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [
+  const handleAddCancellation = useCallback(() => {
+    const newCancellation: ItemProps = {
+      id: uuidv4(),
       reference,
-      quantity,
-      price,
+      quantity: Number(quantity),
+      price: Number(price),
       date,
-      selectedReason,
-      selectedSeller,
-      setCancellations,
-    ]
-  );
+      reason: selectedReason,
+      seller: selectedSeller,
+      status: "Новая отмена",
+      active: "active",
+    };
+
+    const validationResult = CancellationSchema.safeParse(newCancellation);
+    if (!validationResult.success) {
+      const { fieldErrors } = validationResult.error.flatten();
+      setErrors(fieldErrors);
+      return;
+    }
+
+    setItems((prev) => [...prev, newCancellation]);
+
+    resetForm();
+  }, [
+    reference,
+    quantity,
+    price,
+    date,
+    selectedReason,
+    selectedSeller,
+    setItems,
+  ]);
 
   return (
     <section className="create">
@@ -180,7 +173,7 @@ const CancellationForm: React.FC<CancellationFormProps> = ({
             cancellationSelect="cancellation-create-reason select"
             currentValue={selectedReason}
             onChange={handleReasonChange}
-            options={cancellationReasonList}
+            options={reasonList}
             error={errors.reason?.[0]}
           />
           <Select
@@ -189,7 +182,7 @@ const CancellationForm: React.FC<CancellationFormProps> = ({
             cancellationSelect="cancellation-create-seller select"
             currentValue={selectedSeller}
             onChange={handleSellerChange}
-            options={cancellationSellerList}
+            options={sellerList}
             error={errors.seller?.[0]}
           />
         </div>

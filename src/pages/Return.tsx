@@ -12,19 +12,19 @@ import ReturnFilters from "../components/ReturnComponents/ReturnFilters/ReturnFi
 import ReturnList from "../components/ReturnComponents/ReturnList/ReturnList";
 import ReturnForm from "../components/ReturnComponents/ReturnForm/ReturnForm";
 
-const returnActiveStatusList = [
+const ActiveStatusList: SelectOption[] = [
   { id: 1, value: "active", label: "Активный" },
   { id: 2, value: "finished", label: "Завершенный" },
 ];
 
-const returnSellerList: SelectOption[] = [
+const SellerList: SelectOption[] = [
   { id: "АП", value: "АП", label: "АП" },
   { id: "РК", value: "РК", label: "РК" },
   { id: "ЮГ", value: "ЮГ", label: "ЮГ" },
   { id: "EMEX", value: "EMEX", label: "EMEX" },
 ];
 
-const returnReasonList: SelectOption[] = [
+const ReasonList: SelectOption[] = [
   { id: 1, value: "Б/У", label: "Б/У" },
   { id: 2, value: "Брак", label: "Брак" },
   { id: 3, value: "Неверное вложение", label: "Неверное вложение" },
@@ -32,7 +32,7 @@ const returnReasonList: SelectOption[] = [
   { id: 5, value: "Повреждение", label: "Повреждение" },
 ];
 
-const returnStatusList: SelectOption[] = [
+const StatusList: SelectOption[] = [
   { id: 0, value: "Новый возврат", label: "Новый возврат" },
   { id: 1, value: "Запрос поставщику", label: "Запрос поставщику" },
   { id: 2, value: "Запрос на возврат", label: "Запрос на возврат" },
@@ -63,10 +63,10 @@ const Return: React.FC = () => {
   const { StatusCounts, ReasonCounts, SellerCounts, ActiveCounts } =
     useReturnsCounts(
       returns,
-      returnStatusList,
-      returnReasonList,
-      returnSellerList,
-      returnActiveStatusList
+      StatusList,
+      ReasonList,
+      SellerList,
+      ActiveStatusList
     );
 
   const handleDeleteReturn = useCallback(
@@ -141,9 +141,9 @@ const Return: React.FC = () => {
             Очистить Local Storage
           </button>
           <ReturnForm
-            setReturns={setReturns}
-            returnReasonList={returnReasonList}
-            returnSellerList={returnSellerList}
+            setItems={setReturns}
+            reasonList={ReasonList}
+            sellerList={SellerList}
           />
           <ReturnFilters
             filters={{
@@ -164,21 +164,21 @@ const Return: React.FC = () => {
               SellerCounts,
               ActiveCounts,
             }}
-            filterReturns={{
-              returnStatusList,
-              returnSellerList,
-              returnReasonList,
-              returnActiveStatusList,
+            filterData={{
+              StatusList,
+              SellerList,
+              ReasonList,
+              ActiveStatusList,
             }}
-            returns={returns}
+            items={returns}
           />
           <ReturnList
-            setReturns={setReturns}
-            returns={filteredReturns}
+            setItems={setReturns}
+            items={filteredReturns}
             handleEditStatus={handleEditStatus}
-            handleDeleteReturn={handleDeleteReturn}
-            completeReturn={completeReturn}
-            returnStatusList={returnStatusList}
+            handleDelete={handleDeleteReturn}
+            completeItem={completeReturn}
+            statusList={StatusList}
           />
         </>
       )}

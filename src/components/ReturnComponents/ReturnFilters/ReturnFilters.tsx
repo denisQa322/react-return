@@ -1,13 +1,13 @@
 import Select from "../../SelectComponent";
-import { ReturnFiltersProps } from "../../../types/types";
+import { GenericFiltersProps } from "../../../types/types";
 import "./returnFilters.scss";
 
-const ReturnFilters: React.FC<ReturnFiltersProps> = ({
+const ReturnFilters: React.FC<GenericFiltersProps> = ({
   filters,
   filterActions,
-  filterReturns,
+  filterData,
   filterCounts,
-  returns,
+  items,
 }) => {
   const handleFilterChange = (
     key: keyof typeof filterActions,
@@ -27,7 +27,7 @@ const ReturnFilters: React.FC<ReturnFiltersProps> = ({
       {
         id: `${prefix}-all`,
         value: "",
-        label: `${defaultLabel} (${returns.length})`,
+        label: `${defaultLabel} (${items.length})`,
       },
       ...list.map((item) => ({
         ...item,
@@ -47,7 +47,7 @@ const ReturnFilters: React.FC<ReturnFiltersProps> = ({
           handleFilterChange("setSelectedStatusFilter", value)
         }
         options={generateFilterOptions(
-          filterReturns.returnStatusList,
+          filterData.StatusList,
           filterCounts.StatusCounts,
           "Все статусы"
         )}
@@ -61,7 +61,7 @@ const ReturnFilters: React.FC<ReturnFiltersProps> = ({
           handleFilterChange("setSelectedReasonFilter", value)
         }
         options={generateFilterOptions(
-          filterReturns.returnReasonList,
+          filterData.ReasonList,
           filterCounts.ReasonCounts,
           "Все причины"
         )}
@@ -75,7 +75,7 @@ const ReturnFilters: React.FC<ReturnFiltersProps> = ({
           handleFilterChange("setSelectedSellerFilter", value)
         }
         options={generateFilterOptions(
-          filterReturns.returnSellerList,
+          filterData.SellerList,
           filterCounts.SellerCounts,
           "Все поставщики"
         )}
@@ -89,7 +89,7 @@ const ReturnFilters: React.FC<ReturnFiltersProps> = ({
           handleFilterChange("setSelectedActiveFilter", value)
         }
         options={generateFilterOptions(
-          filterReturns.returnActiveStatusList,
+          filterData.ActiveStatusList,
           filterCounts.ActiveCounts,
           "Вся активность"
         )}

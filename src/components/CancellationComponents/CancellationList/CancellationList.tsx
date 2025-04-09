@@ -1,29 +1,29 @@
 import React from "react";
-import { CancellationListProps } from "../../../types/types";
+import { GenericListProps } from "../../../types/types";
 import CancellationItem from "../CancellationItem/CancellationItem";
 
-const CancellationList: React.FC<CancellationListProps> = ({
-  cancellations,
+const CancellationList: React.FC<GenericListProps> = ({
+  items,
   handleEditStatus,
-  handleDeleteCancellation,
-  completeCancellation,
-  cancellationStatusList,
-  setCancellations,
+  handleDelete,
+  completeItem,
+  statusList,
+  setItems,
 }) => {
   return (
     <section className="info">
-      {cancellations.length === 0 ? (
+      {items.length === 0 ? (
         <p className="info-empty">Нет отмен</p>
       ) : (
-        cancellations.map((cancellationItem) => (
+        items.map((cancellationItem) => (
           <CancellationItem
-            cancellationStatusList={cancellationStatusList}
+            statusList={statusList}
             key={cancellationItem.id}
             cancellationItem={cancellationItem}
             handleEditStatus={handleEditStatus}
-            handleDeleteCancellation={handleDeleteCancellation}
-            completeCancellation={completeCancellation}
-            setCancellations={setCancellations}
+            handleDelete={handleDelete}
+            completeItem={completeItem}
+            setItems={setItems}
           />
         ))
       )}

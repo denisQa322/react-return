@@ -1,12 +1,7 @@
 import React, { ChangeEvent, FC } from "react";
 import Error from "./ErrorComponent";
 import "../assets/styles/select.scss";
-
-interface Option {
-  id: string | number;
-  value: string | number;
-  label: string;
-}
+import { SelectOption } from "../types/types";
 
 interface SelectProps {
   error?: string;
@@ -14,7 +9,7 @@ interface SelectProps {
   placeholder: string;
   returnSelect?: string;
   cancellationSelect?: string;
-  options: Option[];
+  options: SelectOption[];
   currentValue: string;
   onChange: (value: string) => void;
 }

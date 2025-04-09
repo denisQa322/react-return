@@ -12,12 +12,12 @@ import CancellationFilters from "../components/CancellationComponents/Cancellati
 import CancellationList from "../components/CancellationComponents/CancellationList/CancellationList";
 import CancellationForm from "../components/CancellationComponents/CancellationForm/CancellationForm";
 
-const cancellationActiveStatusList = [
+const ActiveStatusList: SelectOption[] = [
   { id: 1, value: "active", label: "Активный" },
   { id: 2, value: "finished", label: "Завершенный" },
 ];
 
-const cancellationSellerList: SelectOption[] = [
+const SellerList: SelectOption[] = [
   { id: "АП", value: "АП", label: "АП" },
   { id: "РК", value: "РК", label: "РК" },
   { id: "ЮГ", value: "ЮГ", label: "ЮГ" },
@@ -25,13 +25,13 @@ const cancellationSellerList: SelectOption[] = [
   { id: "VIVAT", value: "VIVAT", label: "VIVAT" },
 ];
 
-const cancellationReasonList: SelectOption[] = [
+const ReasonList: SelectOption[] = [
   { id: 1, value: "Отказ клиента", label: "Отказ клиента" },
   { id: 2, value: "Сроки истекли", label: "Сроки истекли" },
   { id: 3, value: "Ошибка синхронизации", label: "Ошибка синхронизации" },
 ];
 
-const cancellationStatusList: SelectOption[] = [
+const StatusList: SelectOption[] = [
   { id: 1, value: "Новая отмена", label: "Новая отмена" },
   { id: 2, value: "Запрос отправлен", label: "Запрос поставщику" },
   { id: 3, value: "Отмена принята", label: "Отмена принята" },
@@ -59,10 +59,10 @@ const Cancellation: React.FC = () => {
   const { StatusCounts, ReasonCounts, SellerCounts, ActiveCounts } =
     useReturnsCounts(
       cancellations,
-      cancellationStatusList,
-      cancellationReasonList,
-      cancellationSellerList,
-      cancellationActiveStatusList
+      StatusList,
+      ReasonList,
+      SellerList,
+      ActiveStatusList
     );
 
   const handleDeleteCancellation = useCallback(
@@ -131,9 +131,9 @@ const Cancellation: React.FC = () => {
       ) : (
         <>
           <CancellationForm
-            setCancellations={setCancellations}
-            cancellationReasonList={cancellationReasonList}
-            cancellationSellerList={cancellationSellerList}
+            setItems={setCancellations}
+            reasonList={ReasonList}
+            sellerList={SellerList}
           />
           <CancellationFilters
             filters={{
@@ -154,21 +154,21 @@ const Cancellation: React.FC = () => {
               SellerCounts,
               ActiveCounts,
             }}
-            filterCancellations={{
-              cancellationStatusList,
-              cancellationSellerList,
-              cancellationReasonList,
-              cancellationActiveStatusList,
+            filterData={{
+              StatusList,
+              SellerList,
+              ReasonList,
+              ActiveStatusList,
             }}
-            cancellations={cancellations}
+            items={cancellations}
           />
           <CancellationList
-            setCancellations={setCancellations}
-            cancellations={filteredCancellations}
+            setItems={setCancellations}
+            items={filteredCancellations}
             handleEditStatus={handleEditStatus}
-            handleDeleteCancellation={handleDeleteCancellation}
-            completeCancellation={completeCancellation}
-            cancellationStatusList={cancellationStatusList}
+            handleDelete={handleDeleteCancellation}
+            completeItem={completeCancellation}
+            statusList={StatusList}
           />
         </>
       )}
