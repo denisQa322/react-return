@@ -1,0 +1,7 @@
+@use "../../../assets/styles/toVw.scss" as *;
+.filters {
+  padding-bottom: toVw(25px);
+  justify-items: start;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(toVw(250px), 1fr));
+}

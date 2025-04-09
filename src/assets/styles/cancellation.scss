@@ -11,7 +11,7 @@ main {
     font-size: toVw(15px);
   }
   .create {
-    .reject-create {
+    .cancellation-create {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: toVw(70px);

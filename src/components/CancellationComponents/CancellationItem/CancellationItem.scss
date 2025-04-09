@@ -1,0 +1,43 @@
+@use "../../../assets/styles/toVw.scss" as *;
+.cancellation-info {
+  max-width: toVw(500px);
+  width: 100%;
+  border: toVw(1px) solid #0067a4;
+  border-radius: toVw(10px);
+  padding: toVw(10px);
+  display: grid;
+  row-gap: toVw(15px);
+  &-content {
+    padding: toVw(10px);
+    display: grid;
+    gap: toVw(15px);
+    div {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+    }
+    label {
+      font-size: toVw(20px);
+      text-align: left;
+    }
+    p {
+      margin-left: auto;
+      font-size: toVw(20px);
+    }
+    div.cancellation-info-buttons {
+      display: grid;
+      justify-items: center;
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+}
+
+.finished {
+  opacity: 0.5;
+}
+.status-sent {
+  border-left: toVw(10px) solid #1e90ff;
+}
+
+.status-cancellation-accepted {
+  border-left: toVw(10px) solid #32cd32;
+}

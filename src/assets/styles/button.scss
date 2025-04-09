@@ -1,7 +1,7 @@
 @use "./toVw.scss" as *;
 .button-wrapper {
   button.return-create-icon,
-  .reject-create-icon {
+  .cancellation-create-icon {
     margin-left: auto;
     background: none;
     border: none;
@@ -19,7 +19,10 @@
   }
   .return-done-icon,
   .return-edit-icon,
-  .return-delete-icon {
+  .return-delete-icon,
+  .cancellation-done-icon,
+  .cancellation-edit-icon,
+  .cancellation-delete-icon {
     margin-left: auto;
     background: none;
     border: none;

@@ -1,0 +1,10 @@
+@use "../../../assets/styles/toVw.scss" as *;
+.info {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(toVw(500px), 1fr));
+  row-gap: toVw(10px);
+  .info-empty {
+    text-align: left;
+    font-size: toVw(20px);
+  }
+}

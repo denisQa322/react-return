@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const RejectSchema = z.object({
+export const CancellationSchema = z.object({
   reference: z
     .string()
     .min(7, "Референс должен содержать минимум 7 символов")

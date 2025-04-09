@@ -24,7 +24,7 @@ const Home: FC = () => {
               и
               <span>
                 {" "}
-                <Link to="/rejects-page">отменам</Link>
+                <Link to="/cancellations-page">отменам</Link>
               </span>{" "}
               заказов
             </p>

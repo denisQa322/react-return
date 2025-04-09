@@ -2,7 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 import Home from "./pages/Home";
 import Return from "./pages/Return";
 import App from "./App";
-import Reject from "./pages/Reject";
+import Cancellation from "./pages/Cancellation";
 
 const router = createBrowserRouter([
   {
@@ -18,8 +18,8 @@ const router = createBrowserRouter([
         element: <Return />,
       },
       {
-        path: "/rejects-page",
-        element: <Reject />,
+        path: "/cancellations-page",
+        element: <Cancellation />,
       },
     ],
   },

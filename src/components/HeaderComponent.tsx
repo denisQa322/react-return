@@ -16,7 +16,7 @@ const Header: FC = () => {
           <div className="header-navigation-pages">
             <Link to="/returns-page">Возвраты</Link>
 
-            <Link to="/rejects-page">Отмены</Link>
+            <Link to="/Cancellations-page">Отмены</Link>
           </div>
         </nav>
       </div>

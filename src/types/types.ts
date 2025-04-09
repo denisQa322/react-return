@@ -45,7 +45,7 @@ export interface ReturnFiltersProps {
   returns: ItemProps[];
 }
 
-export interface RejectFiltersProps {
+export interface CancellationFiltersProps {
   filters: {
     selectedStatusFilter: string;
     selectedReasonFilter: string;
@@ -58,11 +58,27 @@ export interface RejectFiltersProps {
     setSelectedSellerFilter: (value: string) => void;
     setSelectedActiveFilter: (value: string) => void;
   };
-  filterRejects: {
-    rejectStatusList: { id: string | number; value: string; label: string }[];
-    rejectReasonList: { id: string | number; value: string; label: string }[];
-    rejectSellerList: { id: string | number; value: string; label: string }[];
-    rejectActiveStatusList: { id: number; value: string; label: string }[];
+  filterCancellations: {
+    cancellationStatusList: {
+      id: string | number;
+      value: string;
+      label: string;
+    }[];
+    cancellationReasonList: {
+      id: string | number;
+      value: string;
+      label: string;
+    }[];
+    cancellationSellerList: {
+      id: string | number;
+      value: string;
+      label: string;
+    }[];
+    cancellationActiveStatusList: {
+      id: number;
+      value: string;
+      label: string;
+    }[];
   };
   filterCounts: {
     StatusCounts: Record<string, number>;
@@ -70,7 +86,7 @@ export interface RejectFiltersProps {
     SellerCounts: Record<string, number>;
     ActiveCounts: Record<string, number>;
   };
-  rejects: ItemProps[];
+  cancellations: ItemProps[];
 }
 
 export interface ReturnListProps {
@@ -82,13 +98,17 @@ export interface ReturnListProps {
   setReturns: (action: (prev: ItemProps[]) => ItemProps[]) => void;
 }
 
-export interface RejectListProps {
-  rejects: ItemProps[];
+export interface CancellationListProps {
+  cancellations: ItemProps[];
   handleEditStatus: (id: string) => void;
-  handleDeleteReject: (id: string) => void;
-  completeReject: (id: string) => void;
-  rejectStatusList: { id: string | number; value: string; label: string }[];
-  setRejects: (action: (prev: ItemProps[]) => ItemProps[]) => void;
+  handleDeleteCancellation: (id: string) => void;
+  completeCancellation: (id: string) => void;
+  cancellationStatusList: {
+    id: string | number;
+    value: string;
+    label: string;
+  }[];
+  setCancellations: (action: (prev: ItemProps[]) => ItemProps[]) => void;
 }
 
 export interface ReturnItemListProps {
@@ -100,13 +120,17 @@ export interface ReturnItemListProps {
   setReturns: (action: (prev: ItemProps[]) => ItemProps[]) => void;
 }
 
-export interface RejectItemListProps {
-  rejectItem: ItemProps;
+export interface CancellationItemListProps {
+  cancellationItem: ItemProps;
   handleEditStatus: (id: string) => void;
-  handleDeleteReject: (id: string) => void;
-  completeReject: (id: string) => void;
-  rejectStatusList: { id: string | number; value: string; label: string }[];
-  setRejects: (action: (prev: ItemProps[]) => ItemProps[]) => void;
+  handleDeleteCancellation: (id: string) => void;
+  completeCancellation: (id: string) => void;
+  cancellationStatusList: {
+    id: string | number;
+    value: string;
+    label: string;
+  }[];
+  setCancellations: (action: (prev: ItemProps[]) => ItemProps[]) => void;
 }
 
 export interface ReturnFormProps {
@@ -115,8 +139,16 @@ export interface ReturnFormProps {
   returnSellerList: { id: string | number; value: string; label: string }[];
 }
 
-export interface RejectFormProps {
-  setRejects: (action: (prev: ItemProps[]) => ItemProps[]) => void;
-  rejectReasonList: { id: string | number; value: string; label: string }[];
-  rejectSellerList: { id: string | number; value: string; label: string }[];
+export interface CancellationFormProps {
+  setCancellations: (action: (prev: ItemProps[]) => ItemProps[]) => void;
+  cancellationReasonList: {
+    id: string | number;
+    value: string;
+    label: string;
+  }[];
+  cancellationSellerList: {
+    id: string | number;
+    value: string;
+    label: string;
+  }[];
 }

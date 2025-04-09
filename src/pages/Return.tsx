@@ -122,6 +122,7 @@ const Return: React.FC = () => {
       setReturns(savedReturns);
       setLoading(false);
     }, 2000);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

@@ -13,7 +13,7 @@ interface SelectProps {
   label?: string;
   placeholder: string;
   returnSelect?: string;
-  rejectSelect?: string;
+  cancellationSelect?: string;
   options: Option[];
   currentValue: string;
   onChange: (value: string) => void;
@@ -24,7 +24,7 @@ const Select: FC<SelectProps> = ({
   label,
   placeholder,
   returnSelect,
-  rejectSelect,
+  cancellationSelect,
   options,
   currentValue,
   onChange,
@@ -33,7 +33,7 @@ const Select: FC<SelectProps> = ({
     onChange(e.target.value);
   };
   return (
-    <div className={returnSelect || rejectSelect}>
+    <div className={returnSelect || cancellationSelect}>
       <label>{label}</label>
       <select value={currentValue} onChange={selectChange}>
         <option disabled value="">
