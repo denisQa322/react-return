@@ -1,15 +1,7 @@
 import { ChangeEvent, FC } from "react";
 import Error from "./ErrorComponent";
 import "../assets/styles/input.scss";
-
-interface InputProps {
-  disabled?: boolean;
-  error?: string;
-  label: string;
-  onChange?: (value: string) => void;
-  type: string;
-  value: string;
-}
+import { InputProps } from "../types/types";
 
 const Input: FC<InputProps> = ({
   error,

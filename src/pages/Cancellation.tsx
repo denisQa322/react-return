@@ -2,8 +2,8 @@ import React, { useCallback, useEffect, useState } from "react";
 import "../assets/styles/cancellation.scss";
 
 import useLocalStorage from "../hooks/useLocalStorage";
-import UseCancellationFilters from "../hooks/UseCancellationFilters";
-import useReturnsCounts from "../hooks/useReturnsCounts";
+import useFilters from "../hooks/useFilters";
+import useCounts from "../hooks/useCounts";
 
 import { ItemProps, SelectOption } from "../types/types";
 
@@ -53,17 +53,16 @@ const Cancellation: React.FC = () => {
     setSelectedSellerFilter,
     selectedActiveFilter,
     setSelectedActiveFilter,
-    filteredCancellations,
-  } = UseCancellationFilters(cancellations);
+    filteredItems,
+  } = useFilters(cancellations, "cancellationFilters");
 
-  const { StatusCounts, ReasonCounts, SellerCounts, ActiveCounts } =
-    useReturnsCounts(
-      cancellations,
-      StatusList,
-      ReasonList,
-      SellerList,
-      ActiveStatusList
-    );
+  const { StatusCounts, ReasonCounts, SellerCounts, ActiveCounts } = useCounts(
+    cancellations,
+    StatusList,
+    ReasonList,
+    SellerList,
+    ActiveStatusList
+  );
 
   const handleDeleteCancellation = useCallback(
     (id: string) => {
@@ -164,7 +163,7 @@ const Cancellation: React.FC = () => {
           />
           <CancellationList
             setItems={setCancellations}
-            items={filteredCancellations}
+            items={filteredItems}
             handleEditStatus={handleEditStatus}
             handleDelete={handleDeleteCancellation}
             completeItem={completeCancellation}

@@ -1,14 +1,7 @@
 // ButtonComponent.tsx
-import { FC, MouseEventHandler } from "react";
+import { FC } from "react";
 import "../assets/styles/button.scss";
-
-interface ButtonProps {
-  onClick: MouseEventHandler<HTMLButtonElement>;
-  btnClass: string;
-  btnImgSrc: string;
-  disabled?: boolean;
-  buttonAlt: string;
-}
+import { ButtonProps } from "../types/types";
 
 const Button: FC<ButtonProps> = ({
   onClick,

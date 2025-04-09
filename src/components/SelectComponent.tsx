@@ -1,18 +1,7 @@
 import React, { ChangeEvent, FC } from "react";
 import Error from "./ErrorComponent";
 import "../assets/styles/select.scss";
-import { SelectOption } from "../types/types";
-
-interface SelectProps {
-  error?: string;
-  label?: string;
-  placeholder: string;
-  returnSelect?: string;
-  cancellationSelect?: string;
-  options: SelectOption[];
-  currentValue: string;
-  onChange: (value: string) => void;
-}
+import { SelectProps } from "../types/types";
 
 const Select: FC<SelectProps> = ({
   error,

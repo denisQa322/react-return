@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { ItemProps, SelectOption } from "../types/types";
 
-const useReturnsCounts = (
+const useCounts = (
   items: ItemProps[],
   statusList: SelectOption[],
   reasonsList: SelectOption[],
@@ -55,4 +55,4 @@ const useReturnsCounts = (
   return { StatusCounts, ReasonCounts, SellerCounts, ActiveCounts };
 };
 
-export default useReturnsCounts;
+export default useCounts;

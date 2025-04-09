@@ -1,3 +1,5 @@
+import { MouseEventHandler } from "react";
+
 export interface SelectOption {
   id: string | number;
   value: string;
@@ -15,6 +17,38 @@ export interface ItemProps {
   status: string;
   isEditing?: boolean;
   active: "active" | "finished";
+}
+
+export interface SelectProps {
+  error?: string;
+  label?: string;
+  placeholder: string;
+  returnSelect?: string;
+  cancellationSelect?: string;
+  options: SelectOption[];
+  currentValue: string;
+  onChange: (value: string) => void;
+}
+
+export interface InputProps {
+  disabled?: boolean;
+  error?: string;
+  label: string;
+  onChange?: (value: string) => void;
+  type: string;
+  value: string;
+}
+
+export interface ErrorProps {
+  message: string;
+}
+
+export interface ButtonProps {
+  onClick: MouseEventHandler<HTMLButtonElement>;
+  btnClass: string;
+  btnImgSrc: string;
+  disabled?: boolean;
+  buttonAlt: string;
 }
 
 export interface FilterState {

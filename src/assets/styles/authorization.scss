@@ -1,0 +1,16 @@
+@use "./toVw.scss" as *;
+.authorization {
+  text-align: center;
+  &-header {
+    margin-top: toVw(50px);
+    margin-bottom: toVw(50px);
+    font-size: toVw(30px);
+  }
+  .btn {
+    padding: toVw(10px) toVw(15px);
+    background-color: white;
+    border: toVw(1px) solid #0067a4;
+    border-radius: toVw(7px);
+    font-size: toVw(15px);
+  }
+}

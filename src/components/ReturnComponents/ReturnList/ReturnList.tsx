@@ -20,7 +20,7 @@ const ReturnList: React.FC<GenericListProps> = ({
           <ReturnItem
             statusList={statusList}
             key={returnItem.id}
-            returnItem={returnItem}
+            item={returnItem}
             handleEditStatus={handleEditStatus}
             handleDelete={handleDelete}
             completeItem={completeItem}

@@ -2,8 +2,8 @@ import React, { useCallback, useEffect, useState } from "react";
 import "../assets/styles/return.scss";
 
 import useLocalStorage from "../hooks/useLocalStorage";
-import useReturnFilters from "../hooks/useReturnFilters";
-import useReturnsCounts from "../hooks/useReturnsCounts";
+import useFilters from "../hooks/useFilters";
+import useCounts from "../hooks/useCounts";
 
 import { ItemProps, SelectOption } from "../types/types";
 
@@ -57,17 +57,16 @@ const Return: React.FC = () => {
     setSelectedSellerFilter,
     selectedActiveFilter,
     setSelectedActiveFilter,
-    filteredReturns,
-  } = useReturnFilters(returns);
+    filteredItems,
+  } = useFilters(returns, "returnFilters");
 
-  const { StatusCounts, ReasonCounts, SellerCounts, ActiveCounts } =
-    useReturnsCounts(
-      returns,
-      StatusList,
-      ReasonList,
-      SellerList,
-      ActiveStatusList
-    );
+  const { StatusCounts, ReasonCounts, SellerCounts, ActiveCounts } = useCounts(
+    returns,
+    StatusList,
+    ReasonList,
+    SellerList,
+    ActiveStatusList
+  );
 
   const handleDeleteReturn = useCallback(
     (id: string) => {
@@ -131,15 +130,6 @@ const Return: React.FC = () => {
         <LoadingComponent />
       ) : (
         <>
-          <button
-            className="clean-storage"
-            onClick={() => {
-              localStorage.clear();
-              location.reload();
-            }}
-          >
-            Очистить Local Storage
-          </button>
           <ReturnForm
             setItems={setReturns}
             reasonList={ReasonList}
@@ -174,12 +164,21 @@ const Return: React.FC = () => {
           />
           <ReturnList
             setItems={setReturns}
-            items={filteredReturns}
+            items={filteredItems}
             handleEditStatus={handleEditStatus}
             handleDelete={handleDeleteReturn}
             completeItem={completeReturn}
             statusList={StatusList}
           />
+          <button
+            className="clean-storage"
+            onClick={() => {
+              localStorage.clear();
+              location.reload();
+            }}
+          >
+            Очистить Local Storage
+          </button>
         </>
       )}
     </main>

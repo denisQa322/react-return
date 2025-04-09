@@ -19,7 +19,7 @@ const CancellationList: React.FC<GenericListProps> = ({
           <CancellationItem
             statusList={statusList}
             key={cancellationItem.id}
-            cancellationItem={cancellationItem}
+            item={cancellationItem}
             handleEditStatus={handleEditStatus}
             handleDelete={handleDelete}
             completeItem={completeItem}

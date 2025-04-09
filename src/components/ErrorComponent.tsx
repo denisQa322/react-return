@@ -1,9 +1,6 @@
 import { CSSTransition } from "react-transition-group";
 import styles from "../assets/styles/error.module.scss";
-
-interface ErrorProps {
-  message: string;
-}
+import { ErrorProps } from "../types/types";
 
 const ErrorComponent: React.FC<ErrorProps> = ({ message }) => {
   return (

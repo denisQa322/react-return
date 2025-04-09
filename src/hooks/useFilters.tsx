@@ -1,30 +1,32 @@
 import { useState, useMemo, useEffect } from "react";
 import { ItemProps } from "../types/types";
 
-const STORAGE_KEY = "returnFilters";
-
-const getInitialFilter = (key: string, defaultValue: string) => {
-  const storedFilters = localStorage.getItem(STORAGE_KEY);
+const getInitialFilter = (
+  storageKey: string,
+  key: string,
+  defaultValue: string
+) => {
+  const storedFilters = localStorage.getItem(storageKey);
   const parsedFilters = storedFilters ? JSON.parse(storedFilters) : {};
   return parsedFilters[key] !== undefined ? parsedFilters[key] : defaultValue;
 };
 
-const useReturnFilters = (returns: ItemProps[]) => {
+const useFilters = (items: ItemProps[], storageKey: string) => {
   const [selectedStatusFilter, setSelectedStatusFilter] = useState(() =>
-    getInitialFilter("status", "")
+    getInitialFilter(storageKey, "status", "")
   );
   const [selectedReasonFilter, setSelectedReasonFilter] = useState(() =>
-    getInitialFilter("reason", "")
+    getInitialFilter(storageKey, "reason", "")
   );
   const [selectedSellerFilter, setSelectedSellerFilter] = useState(() =>
-    getInitialFilter("seller", "")
+    getInitialFilter(storageKey, "seller", "")
   );
   const [selectedActiveFilter, setSelectedActiveFilter] = useState(() =>
-    getInitialFilter("active", "active")
+    getInitialFilter(storageKey, "active", "active")
   );
 
-  const filteredReturns = useMemo(() => {
-    return returns.filter((item) => {
+  const filteredItems = useMemo(() => {
+    return items.filter((item) => {
       return (
         (!selectedStatusFilter || item.status === selectedStatusFilter) &&
         (!selectedReasonFilter || item.reason === selectedReasonFilter) &&
@@ -33,7 +35,7 @@ const useReturnFilters = (returns: ItemProps[]) => {
       );
     });
   }, [
-    returns,
+    items,
     selectedStatusFilter,
     selectedReasonFilter,
     selectedSellerFilter,
@@ -41,7 +43,7 @@ const useReturnFilters = (returns: ItemProps[]) => {
   ]);
   useEffect(() => {
     localStorage.setItem(
-      STORAGE_KEY,
+      storageKey,
       JSON.stringify({
         status: selectedStatusFilter,
         reason: selectedReasonFilter,
@@ -54,6 +56,7 @@ const useReturnFilters = (returns: ItemProps[]) => {
     selectedReasonFilter,
     selectedSellerFilter,
     selectedActiveFilter,
+    storageKey,
   ]);
   return {
     selectedStatusFilter,
@@ -64,8 +67,8 @@ const useReturnFilters = (returns: ItemProps[]) => {
     setSelectedReasonFilter,
     setSelectedSellerFilter,
     setSelectedActiveFilter,
-    filteredReturns,
+    filteredItems,
   };
 };
 
-export default useReturnFilters;
+export default useFilters;
